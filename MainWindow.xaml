@@ -767,6 +767,13 @@
                                                FontSize="12"
                                                FontWeight="Bold"
                                                Margin="0,5,0,0"/>
+                                    <TextBlock x:Name="SigningDetailsText"
+                                               Text="Checking signing readiness..."
+                                               Foreground="#5F5F67"
+                                               FontSize="9"
+                                               TextWrapping="Wrap"
+                                               MaxHeight="30"
+                                               Margin="0,5,0,0"/>
                                 </StackPanel>
                             </Grid>
 
@@ -1101,13 +1108,6 @@
                                             Style="{StaticResource SecondaryButton}"
                                             Click="SelectProvisioningProfileButton_Click"/>
                                 </Grid>
-
-                                <TextBlock x:Name="SigningDetailsText"
-                                           Text="Automatic signing is recommended."
-                                           Foreground="#66666E"
-                                           FontSize="10"
-                                           TextWrapping="Wrap"
-                                           Margin="0,14,0,0"/>
 
                             </StackPanel>
 
