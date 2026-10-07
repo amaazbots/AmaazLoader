@@ -158,6 +158,7 @@
 
     <PropertyGroup>
       <AmaazLoaderRustBackend>$(AMAAZLOADER_DEV_ROOT)\Backend\amaazloader-signing\target\release\amaazloader-signing.exe</AmaazLoaderRustBackend>
+      <AmaazLoaderPairingBackend>$(MSBuildProjectDirectory)\Backend\amaazloader-pairing\target\release\amaazloader-pairing.exe</AmaazLoaderPairingBackend>
       <AmaazLoaderZSignDirectory>$(AMAAZLOADER_DEV_ROOT)\Tools\zsign</AmaazLoaderZSignDirectory>
       <AmaazLoaderLibimobiledeviceDirectory>$(AMAAZLOADER_DEV_ROOT)\Tools\libimobiledevice</AmaazLoaderLibimobiledeviceDirectory>
     </PropertyGroup>
@@ -165,6 +166,10 @@
     <Error
       Condition="!Exists('$(AmaazLoaderRustBackend)')"
       Text="The compiled AmaazLoader Rust backend could not be found at: $(AmaazLoaderRustBackend)" />
+
+    <Error
+      Condition="!Exists('$(AmaazLoaderPairingBackend)')"
+      Text="The compiled AmaazLoader pairing helper could not be found at: $(AmaazLoaderPairingBackend)" />
 
     <Error
       Condition="!Exists('$(AmaazLoaderZSignDirectory)\zsign.exe')"
