@@ -1,0 +1,26 @@
+{
+  "apps": [
+    {
+      "id": "sidestore",
+      "name": "SideStore",
+      "description": "A community-driven alternative app store for iPhone and iPad.",
+      "category": "Sideloading",
+      "repository": "SideStore/SideStore",
+      "assetName": "SideStore.ipa",
+      "website": "https://sidestore.io/",
+      "notes": "AmaazLoader resolves the latest official SideStore IPA directly from GitHub.",
+      "featured": true
+    },
+    {
+      "id": "livecontainer",
+      "name": "LiveContainer",
+      "description": "Run and manage multiple apps from a single sideloaded container.",
+      "category": "Utilities",
+      "repository": "LiveContainer/LiveContainer",
+      "assetName": "LiveContainer.ipa",
+      "website": "https://livecontainer.github.io/",
+      "notes": "Standalone official LiveContainer release. Some features require SideStore or AltStore.",
+      "featured": true
+    }
+  ]
+}
