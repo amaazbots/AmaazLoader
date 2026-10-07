@@ -176,47 +176,61 @@ public sealed class InstallerCatalogService
         long? totalBytes =
             response.Content.Headers.ContentLength;
 
-        await using Stream source =
-            await response.Content.ReadAsStreamAsync(cancellationToken);
-
-        await using var destination =
-            new FileStream(
-                destinationPath,
-                FileMode.Create,
-                FileAccess.Write,
-                FileShare.None,
-                81920,
-                true);
-
-        byte[] buffer = new byte[81920];
-        long totalRead = 0;
-
-        while (true)
         {
-            int read =
-                await source.ReadAsync(buffer, cancellationToken);
+            await using Stream source =
+                await response.Content.ReadAsStreamAsync(
+                    cancellationToken);
 
-            if (read == 0)
-                break;
+            await using var destination =
+                new FileStream(
+                    destinationPath,
+                    FileMode.Create,
+                    FileAccess.Write,
+                    FileShare.None,
+                    81920,
+                    true);
 
-            await destination.WriteAsync(
-                buffer.AsMemory(0, read),
-                cancellationToken);
+            byte[] buffer = new byte[81920];
+            long totalRead = 0;
 
-            totalRead += read;
+            while (true)
+            {
+                int read =
+                    await source.ReadAsync(
+                        buffer,
+                        cancellationToken);
 
-            if (totalBytes > 0)
-                progress?.Report(
-                    Math.Clamp(
-                        totalRead * 100d / totalBytes.Value,
+                if (read == 0)
+                    break;
+
+                await destination.WriteAsync(
+                    buffer.AsMemory(
                         0,
-                        100));
+                        read),
+                    cancellationToken);
+
+                totalRead +=
+                    read;
+
+                if (totalBytes > 0)
+                {
+                    progress?.Report(
+                        Math.Clamp(
+                            totalRead * 100d /
+                            totalBytes.Value,
+                            0,
+                            100));
+                }
+            }
+
+            await destination.FlushAsync(
+                cancellationToken);
         }
 
-        await destination.FlushAsync(cancellationToken);
         progress?.Report(100);
 
-        if (!string.IsNullOrWhiteSpace(release.Sha256))
+        if (!string.IsNullOrWhiteSpace(
+            release.Sha256))
         {
             string actualHash =
                 await ComputeSha256Async(
@@ -227,7 +241,8 @@ public sealed class InstallerCatalogService
                 release.Sha256,
                 StringComparison.OrdinalIgnoreCase))
             {
-                File.Delete(destinationPath);
+                File.Delete(
+                    destinationPath);
 
                 throw new InvalidOperationException(
                     "The downloaded IPA failed SHA-256 verification.");
