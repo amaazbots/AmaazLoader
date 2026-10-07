@@ -31,6 +31,8 @@ public partial class MainWindow : Window
     private readonly AppleAccountManager appleAccountManager;
     private readonly InstallerCatalogService installerCatalogService =
         new();
+    private readonly PairingManager pairingManager =
+        new();
     private readonly DispatcherTimer deviceTimer;
 
     private SigningInfo? currentSigningInfo;
@@ -45,6 +47,8 @@ public partial class MainWindow : Window
     private bool appleAuthenticationInProgress;
     private bool twoFactorPromptShowing;
     private bool quickInstallInProgress;
+
+    private string? pendingPairingTarget;
 
     private int currentAnimatedProgress;
 
@@ -111,6 +115,19 @@ private static string RustBackendPath =>
             signingBackendManager.CheckBackend();
 
         ValidateSigning();
+    }
+
+    private void PairingButton_Click(
+        object sender,
+        RoutedEventArgs e)
+    {
+        var pairingWindow =
+            new PairingManagerWindow
+            {
+                Owner = this
+            };
+
+        pairingWindow.ShowDialog();
     }
 
     private async void QuickInstallSideStoreButton_Click(
@@ -194,9 +211,16 @@ private static string RustBackendPath =>
                     release,
                     progress);
 
+            pendingPairingTarget =
+                app.Id.Equals(
+                    "livecontainer",
+                    StringComparison.OrdinalIgnoreCase)
+                    ? "all"
+                    : "sidestore";
+
             LoadIpaFromPath(
                 ipaPath,
-                $"{app.Name} downloaded and loaded. Press Sideload IPA when ready.");
+                $"{app.Name} downloaded and loaded. Pairing will be configured automatically after installation.");
 
             QuickInstallProgressBar.Value =
                 100;
@@ -256,6 +280,17 @@ private static string RustBackendPath =>
                 installersWindow.SelectedInstallerName)
                 ? "Installer"
                 : installersWindow.SelectedInstallerName;
+
+        pendingPairingTarget =
+            installerName.Contains(
+                "LiveContainer",
+                StringComparison.OrdinalIgnoreCase)
+                ? "all"
+                : installerName.Contains(
+                    "SideStore",
+                    StringComparison.OrdinalIgnoreCase)
+                    ? "sidestore"
+                    : null;
 
         LoadIpaFromPath(
             installersWindow.SelectedIpaPath,
@@ -338,6 +373,9 @@ private static string RustBackendPath =>
 
         if (dialog.ShowDialog() != true)
             return;
+
+        pendingPairingTarget =
+            null;
 
         LoadIpaFromPath(
             dialog.FileName,
@@ -841,6 +879,44 @@ private static string RustBackendPath =>
 
             if (success)
             {
+                bool pairingConfigured =
+                    false;
+
+                string pairingMessage =
+                    "";
+
+                if (!string.IsNullOrWhiteSpace(
+                    pendingPairingTarget))
+                {
+                    SideloadStageText.Text =
+                        "Configuring pairing";
+
+                    SideloadProgressDetailsText.Text =
+                        "Placing the device pairing file inside the installed app.";
+
+                    StatusText.Text =
+                        "Configuring pairing file...";
+
+                    PairingOperationResult pairingResult =
+                        pendingPairingTarget == "sidestore"
+                            ? await pairingManager.PlaceSideStoreAsync()
+                            : await pairingManager.PlaceAllAsync();
+
+                    pairingConfigured =
+                        pairingResult.Success;
+
+                    pairingMessage =
+                        pairingConfigured
+                            ? "\nPairing file: Configured automatically ✓"
+                            : "\nPairing file: App installed, but pairing setup needs attention.";
+
+                    if (pairingConfigured)
+                    {
+                        pendingPairingTarget =
+                            null;
+                    }
+                }
+
                 CompleteSideloadProgress();
 
                 SigningStatusText.Text =
@@ -850,10 +926,13 @@ private static string RustBackendPath =>
                     $"App: {AppNameText.Text}\n" +
                     $"Bundle ID: {BundleIdText.Text}\n" +
                     $"Device: {device.Name}\n\n" +
-                    "The application was signed and installed directly to your iPhone.";
+                    "The application was signed and installed directly to your iPhone." +
+                    pairingMessage;
 
                 StatusText.Text =
-                    "Sideload completed successfully.";
+                    pairingConfigured
+                        ? "Sideload and pairing setup completed successfully."
+                        : "Sideload completed successfully.";
 
                 SetSigningStatus(
                     true);
@@ -861,10 +940,15 @@ private static string RustBackendPath =>
                 MessageBox.Show(
                     $"The IPA was signed and installed successfully.\n\n" +
                     $"App: {AppNameText.Text}\n" +
-                    $"Bundle ID: {BundleIdText.Text}",
+                    $"Bundle ID: {BundleIdText.Text}" +
+                    pairingMessage,
                     "AmaazLoader",
                     MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                    pairingConfigured ||
+                    string.IsNullOrWhiteSpace(
+                        pendingPairingTarget)
+                        ? MessageBoxImage.Information
+                        : MessageBoxImage.Warning);
             }
             else
             {
