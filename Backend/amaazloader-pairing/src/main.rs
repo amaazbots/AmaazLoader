@@ -503,6 +503,11 @@ async fn scan_supported_apps(
                         dictionary
                             .get(
                                 "CFBundleDisplayName")
+                            .or_else(
+                                || {
+                                    dictionary.get(
+                                        "CFBundleName")
+                                })
                             .and_then(
                                 |value| {
                                     value.as_string()
@@ -696,7 +701,7 @@ async fn place_file(
 
             let _ =
                 afc.mk_dir(
-                    &current)
+                    current.clone())
                     .await;
         }
     }
