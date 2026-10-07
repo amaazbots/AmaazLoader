@@ -63,6 +63,26 @@
   </Target>
 
   <!-- ============================================================= -->
+  <!-- BUILD PAIRING HELPER                                           -->
+  <!-- ============================================================= -->
+
+  <Target Name="BuildAmaazLoaderPairingBackend"
+          BeforeTargets="Build;Publish">
+
+    <Error
+      Condition="!Exists('$(MSBuildProjectDirectory)\Backend\amaazloader-pairing\Cargo.toml')"
+      Text="The AmaazLoader pairing helper Cargo.toml could not be found." />
+
+    <Message
+      Text="Building AmaazLoader pairing helper..."
+      Importance="high" />
+
+    <Exec
+      Command="cargo build --release --manifest-path &quot;$(MSBuildProjectDirectory)\Backend\amaazloader-pairing\Cargo.toml&quot;" />
+
+  </Target>
+
+  <!-- ============================================================= -->
   <!-- COPY RUNTIME FILES TO DEBUG / BUILD OUTPUT                     -->
   <!-- Makes dotnet run work                                         -->
   <!-- ============================================================= -->
@@ -72,6 +92,7 @@
 
     <PropertyGroup>
       <AmaazLoaderRustBackend>$(AMAAZLOADER_DEV_ROOT)\Backend\amaazloader-signing\target\release\amaazloader-signing.exe</AmaazLoaderRustBackend>
+      <AmaazLoaderPairingBackend>$(MSBuildProjectDirectory)\Backend\amaazloader-pairing\target\release\amaazloader-pairing.exe</AmaazLoaderPairingBackend>
       <AmaazLoaderZSignDirectory>$(AMAAZLOADER_DEV_ROOT)\Tools\zsign</AmaazLoaderZSignDirectory>
       <AmaazLoaderLibimobiledeviceDirectory>$(AMAAZLOADER_DEV_ROOT)\Tools\libimobiledevice</AmaazLoaderLibimobiledeviceDirectory>
     </PropertyGroup>
@@ -79,6 +100,10 @@
     <Error
       Condition="!Exists('$(AmaazLoaderRustBackend)')"
       Text="The compiled AmaazLoader Rust backend could not be found at: $(AmaazLoaderRustBackend)" />
+
+    <Error
+      Condition="!Exists('$(AmaazLoaderPairingBackend)')"
+      Text="The compiled AmaazLoader pairing helper could not be found at: $(AmaazLoaderPairingBackend)" />
 
     <Error
       Condition="!Exists('$(AmaazLoaderZSignDirectory)\zsign.exe')"
@@ -100,6 +125,11 @@
     <Copy
       SourceFiles="$(AmaazLoaderRustBackend)"
       DestinationFiles="$(TargetDir)Backend\amaazloader-signing.exe"
+      SkipUnchangedFiles="true" />
+
+    <Copy
+      SourceFiles="$(AmaazLoaderPairingBackend)"
+      DestinationFiles="$(TargetDir)Backend\amaazloader-pairing.exe"
       SkipUnchangedFiles="true" />
 
     <Copy
@@ -156,6 +186,11 @@
     <Copy
       SourceFiles="$(AmaazLoaderRustBackend)"
       DestinationFiles="$(PublishDir)Backend\amaazloader-signing.exe"
+      SkipUnchangedFiles="true" />
+
+    <Copy
+      SourceFiles="$(AmaazLoaderPairingBackend)"
+      DestinationFiles="$(PublishDir)Backend\amaazloader-pairing.exe"
       SkipUnchangedFiles="true" />
 
     <Copy
