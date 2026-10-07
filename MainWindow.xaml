@@ -1030,7 +1030,7 @@
                                                 Margin="0,0,14,0"
                                                 ClipToBounds="True">
 
-                                            <Image Source="https://raw.githubusercontent.com/nab138/iloader/main/src-tauri/icons/icon.png"
+                                            <Image Source="https://raw.githubusercontent.com/LiveContainer/LiveContainer/main/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon1024.png"
                                                    Stretch="UniformToFill"/>
 
                                         </Border>
@@ -1039,12 +1039,12 @@
                                         <StackPanel Grid.Column="1"
                                                     VerticalAlignment="Center">
 
-                                            <TextBlock Text="iLoader"
+                                            <TextBlock Text="LiveContainer"
                                                        Foreground="#F5F5F7"
                                                        FontSize="14"
                                                        FontWeight="SemiBold"/>
 
-                                            <TextBlock Text="Desktop SideStore setup utility."
+                                            <TextBlock Text="Run and manage multiple apps from one container."
                                                        Foreground="#66666E"
                                                        FontSize="10"
                                                        Margin="0,5,0,0"/>
@@ -1052,18 +1052,17 @@
                                         </StackPanel>
 
 
-                                        <Button x:Name="OpenILoaderButton"
+                                        <Button x:Name="QuickInstallLiveContainerButton"
                                                 Grid.Column="2"
-                                                Content="Open"
-                                                Background="#1B1B20"
-                                                Foreground="#F5F5F7"
-                                                BorderBrush="#303036"
-                                                BorderThickness="1"
+                                                Content="Install"
+                                                Background="#F5F5F7"
+                                                Foreground="#080809"
+                                                BorderThickness="0"
                                                 Padding="17,9"
                                                 FontSize="11"
                                                 FontWeight="Bold"
                                                 Cursor="Hand"
-                                                Click="OpenILoaderButton_Click"
+                                                Click="QuickInstallLiveContainerButton_Click"
                                                 VerticalAlignment="Center"/>
 
                                     </Grid>
@@ -1082,7 +1081,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock x:Name="QuickInstallStatusText"
-                                           Text="Install SideStore directly, or open iLoader for its desktop setup utility."
+                                           Text="Choose an app above to download and prepare it for sideloading."
                                            Foreground="#5F5F67"
                                            FontSize="10"
                                            VerticalAlignment="Center"/>
