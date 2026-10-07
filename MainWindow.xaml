@@ -942,18 +942,15 @@
                                         </Grid.ColumnDefinitions>
 
 
-                                        <Border Width="42"
-                                                Height="42"
-                                                CornerRadius="12"
-                                                Background="#F5F5F7"
-                                                Margin="0,0,14,0">
+                                        <Border Width="46"
+                                                Height="46"
+                                                CornerRadius="13"
+                                                Background="#15151A"
+                                                Margin="0,0,14,0"
+                                                ClipToBounds="True">
 
-                                            <TextBlock Text="S"
-                                                       Foreground="#080809"
-                                                       FontSize="16"
-                                                       FontWeight="ExtraBold"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"/>
+                                            <Image Source="https://raw.githubusercontent.com/SideStore/SideStore/develop/AltStore/Resources/Icons.xcassets/AppIcon.appiconset/180.png"
+                                                   Stretch="UniformToFill"/>
 
                                         </Border>
 
@@ -1026,18 +1023,15 @@
                                         </Grid.ColumnDefinitions>
 
 
-                                        <Border Width="42"
-                                                Height="42"
-                                                CornerRadius="12"
-                                                Background="#1C1C21"
-                                                Margin="0,0,14,0">
+                                        <Border Width="46"
+                                                Height="46"
+                                                CornerRadius="13"
+                                                Background="#15151A"
+                                                Margin="0,0,14,0"
+                                                ClipToBounds="True">
 
-                                            <TextBlock Text="L"
-                                                       Foreground="#F5F5F7"
-                                                       FontSize="16"
-                                                       FontWeight="ExtraBold"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"/>
+                                            <Image Source="https://raw.githubusercontent.com/nab138/iloader/main/src-tauri/icons/icon.png"
+                                                   Stretch="UniformToFill"/>
 
                                         </Border>
 
@@ -1045,12 +1039,12 @@
                                         <StackPanel Grid.Column="1"
                                                     VerticalAlignment="Center">
 
-                                            <TextBlock Text="LiveContainer"
+                                            <TextBlock Text="iLoader"
                                                        Foreground="#F5F5F7"
                                                        FontSize="14"
                                                        FontWeight="SemiBold"/>
 
-                                            <TextBlock Text="Run and manage multiple apps from one container."
+                                            <TextBlock Text="Desktop SideStore setup utility."
                                                        Foreground="#66666E"
                                                        FontSize="10"
                                                        Margin="0,5,0,0"/>
@@ -1058,17 +1052,18 @@
                                         </StackPanel>
 
 
-                                        <Button x:Name="QuickInstallLiveContainerButton"
+                                        <Button x:Name="OpenILoaderButton"
                                                 Grid.Column="2"
-                                                Content="Install"
-                                                Background="#F5F5F7"
-                                                Foreground="#080809"
-                                                BorderThickness="0"
+                                                Content="Open"
+                                                Background="#1B1B20"
+                                                Foreground="#F5F5F7"
+                                                BorderBrush="#303036"
+                                                BorderThickness="1"
                                                 Padding="17,9"
                                                 FontSize="11"
                                                 FontWeight="Bold"
                                                 Cursor="Hand"
-                                                Click="QuickInstallLiveContainerButton_Click"
+                                                Click="OpenILoaderButton_Click"
                                                 VerticalAlignment="Center"/>
 
                                     </Grid>
@@ -1087,7 +1082,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock x:Name="QuickInstallStatusText"
-                                           Text="Choose an app above to get started."
+                                           Text="Install SideStore directly, or open iLoader for its desktop setup utility."
                                            Foreground="#5F5F67"
                                            FontSize="10"
                                            VerticalAlignment="Center"/>
