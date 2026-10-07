@@ -1,6 +1,5 @@
 use std::{
     io::Cursor,
-    path::PathBuf,
     time::Duration,
 };
 
