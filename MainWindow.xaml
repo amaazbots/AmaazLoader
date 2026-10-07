@@ -551,20 +551,14 @@
                     </Border>
 
 
-                    <Border Width="50"
-                            Height="50"
-                            CornerRadius="14"
-                            Background="#121216"
+                    <Button x:Name="InstallersButton"
+                            Content="↓"
+                            Style="{StaticResource SidebarButton}"
+                            FontSize="22"
+                            ToolTip="Installers"
+                            Click="InstallersButton_Click"
                             HorizontalAlignment="Center"
-                            Margin="0,0,0,12">
-
-                        <TextBlock Text="⌁"
-                                   Foreground="#72727A"
-                                   FontSize="21"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
-
-                    </Border>
+                            Margin="0,0,0,12"/>
 
 
                     <Border Width="50"
