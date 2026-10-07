@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 anyhow = "1"
-idevice = { version = "0.1.68", features = ["usbmuxd", "house_arrest", "afc", "remote_pairing", "pair"] }
+idevice = { version = "0.1.68", features = ["usbmuxd", "house_arrest", "afc", "installation_proxy", "remote_pairing", "pair"] }
 plist = "1.8.0"
 plist-macro = "0.1.6"
 tokio = { version = "1.53.1", features = ["full"] }
