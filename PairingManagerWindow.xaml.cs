@@ -174,14 +174,14 @@ public partial class PairingManagerWindow : Window
 
             PairingDetailsText.Text =
                 "SideStore or LiveContainer can now use the pairing data from its own app container.";
-
-            await RefreshAppsAsync();
         }
         finally
         {
             operationInProgress =
                 false;
         }
+
+        await RefreshAppsAsync();
     }
 
     private async void ExportPairingButton_Click(
