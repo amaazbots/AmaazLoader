@@ -14,12 +14,12 @@
     {
       "id": "livecontainer",
       "name": "LiveContainer",
-      "description": "Run and manage multiple apps from a single sideloaded container.",
+      "description": "Install LiveContainer with SideStore support for app refreshing and container workflows.",
       "category": "Utilities",
       "repository": "LiveContainer/LiveContainer",
-      "assetName": "LiveContainer.ipa",
+      "assetName": "LiveContainer+SideStore.ipa",
       "website": "https://livecontainer.github.io/",
-      "notes": "Standalone official LiveContainer release. Some features require SideStore or AltStore.",
+      "notes": "Uses the official LiveContainer + SideStore release so AmaazLoader can configure pairing for both apps automatically.",
       "featured": true
     }
   ]
