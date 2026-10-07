@@ -17,6 +17,11 @@ public static class AppPaths
             BackendDirectory,
             "amaazloader-signing.exe");
 
+    public static string PairingBackendExecutable =>
+        Path.Combine(
+            BackendDirectory,
+            "amaazloader-pairing.exe");
+
     public static string ToolsDirectory =>
         Path.Combine(
             BaseDirectory,
