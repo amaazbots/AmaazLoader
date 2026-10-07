@@ -3,265 +3,440 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Pairing Tools - AmaazLoader"
         Icon="Assets/AmaazLoader.ico"
-        Width="720"
-        Height="620"
-        ResizeMode="NoResize"
+        Width="780"
+        Height="650"
+        MinWidth="720"
+        MinHeight="600"
         WindowStartupLocation="CenterOwner"
         Background="#050506"
-        Foreground="#F5F5F7">
+        Foreground="#F5F5F7"
+        ResizeMode="CanResize">
 
     <Window.Resources>
 
-        <Style x:Key="PairingCard"
+        <Style x:Key="Card"
                TargetType="Border">
-            <Setter Property="Background"
-                    Value="#0E0E11"/>
-            <Setter Property="BorderBrush"
-                    Value="#242429"/>
-            <Setter Property="BorderThickness"
-                    Value="1"/>
-            <Setter Property="CornerRadius"
-                    Value="18"/>
-            <Setter Property="Padding"
-                    Value="20"/>
+            <Setter Property="Background" Value="#0E0E11"/>
+            <Setter Property="BorderBrush" Value="#242429"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="18"/>
+            <Setter Property="Padding" Value="20"/>
         </Style>
 
-        <Style x:Key="PairingButton"
+        <Style x:Key="PrimaryButton"
                TargetType="Button">
-            <Setter Property="Background"
-                    Value="#F5F5F7"/>
-            <Setter Property="Foreground"
-                    Value="#080809"/>
-            <Setter Property="BorderThickness"
-                    Value="0"/>
-            <Setter Property="Padding"
-                    Value="18,10"/>
-            <Setter Property="FontSize"
-                    Value="11"/>
-            <Setter Property="FontWeight"
-                    Value="Bold"/>
-            <Setter Property="Cursor"
-                    Value="Hand"/>
+            <Setter Property="Background" Value="#F5F5F7"/>
+            <Setter Property="Foreground" Value="#080809"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="18,11"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="B"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="11"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="B" Property="Background" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="B" Property="Opacity" Value="0.42"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
-        <Style x:Key="PairingButtonSecondary"
-               TargetType="Button"
-               BasedOn="{StaticResource PairingButton}">
-            <Setter Property="Background"
-                    Value="#18181D"/>
-            <Setter Property="Foreground"
-                    Value="#F5F5F7"/>
-            <Setter Property="BorderBrush"
-                    Value="#303036"/>
-            <Setter Property="BorderThickness"
-                    Value="1"/>
+        <Style x:Key="SecondaryButton"
+               TargetType="Button">
+            <Setter Property="Background" Value="#18181D"/>
+            <Setter Property="Foreground" Value="#F5F5F7"/>
+            <Setter Property="BorderBrush" Value="#303036"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="B"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="B" Property="Background" Value="#222228"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="B" Property="Opacity" Value="0.42"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
     </Window.Resources>
 
-
-    <Grid Margin="28">
+    <Grid>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="82"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="74"/>
         </Grid.RowDefinitions>
 
+        <Border Grid.Row="0"
+                Background="#08080A"
+                BorderBrush="#17171B"
+                BorderThickness="0,0,0,1">
 
-        <StackPanel Grid.Row="0"
-                    Margin="0,0,0,24">
+            <Grid Margin="26,0">
 
-            <TextBlock Text="PAIRING TOOLS"
-                       Foreground="#6A6A72"
-                       FontSize="10"
-                       FontWeight="Bold"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Text="SideStore &amp; LiveContainer"
-                       Foreground="#F5F5F7"
-                       FontSize="25"
-                       FontWeight="Bold"
-                       Margin="0,7,0,0"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="PAIRING TOOLS"
+                               Foreground="#62626A"
+                               FontSize="9"
+                               FontWeight="Bold"/>
+                    <TextBlock Text="Configure SideStore &amp; LiveContainer"
+                               Foreground="#F5F5F7"
+                               FontSize="21"
+                               FontWeight="Bold"
+                               Margin="0,5,0,0"/>
+                    <TextBlock Text="Generate locally and place pairing data directly into supported apps."
+                               Foreground="#65656D"
+                               FontSize="10"
+                               Margin="0,4,0,0"/>
+                </StackPanel>
 
-            <TextBlock Text="AmaazLoader can generate the pairing data on your computer and place it directly inside supported apps. Nothing is uploaded."
-                       Foreground="#777780"
-                       FontSize="11"
-                       TextWrapping="Wrap"
-                       Margin="0,8,0,0"/>
+                <Border Grid.Column="1"
+                        Background="#0C160F"
+                        BorderBrush="#1F442A"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="11,7"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="7"
+                                 Height="7"
+                                 Fill="#73F5A4"
+                                 Margin="0,0,7,0"
+                                 VerticalAlignment="Center"/>
+                        <TextBlock Text="Local only"
+                                   Foreground="#B8E8C6"
+                                   FontSize="9"
+                                   FontWeight="SemiBold"/>
+                    </StackPanel>
+                </Border>
 
-        </StackPanel>
+            </Grid>
 
+        </Border>
 
-        <Grid Grid.Row="1"
-              Margin="0,0,0,14">
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto">
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="14"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+            <StackPanel Margin="26,24,26,26">
 
+                <Border Style="{StaticResource Card}"
+                        Background="#101812"
+                        BorderBrush="#294333"
+                        Margin="0,0,0,14">
 
-            <Border Grid.Column="0"
-                    Style="{StaticResource PairingCard}">
+                    <Grid>
 
-                <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Text="ONE-CLICK SETUP"
+                                       Foreground="#73F5A4"
+                                       FontSize="9"
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="Configure every supported app"
+                                       Foreground="#F5F5F7"
+                                       FontSize="17"
+                                       FontWeight="SemiBold"
+                                       Margin="0,6,0,0"/>
+                            <TextBlock Text="AmaazLoader scans your connected iPhone, generates the pairing file, and places it into SideStore and LiveContainer automatically."
+                                       Foreground="#76907E"
+                                       FontSize="10"
+                                       TextWrapping="Wrap"
+                                       Margin="0,7,20,0"/>
+                        </StackPanel>
+
+                        <Button x:Name="PlaceAllButton"
+                                Grid.Column="1"
+                                Content="Auto Configure"
+                                Style="{StaticResource PrimaryButton}"
+                                Click="PlaceAllButton_Click"
+                                VerticalAlignment="Center"/>
+
+                    </Grid>
+
+                </Border>
+
+                <Grid Margin="0,0,0,14">
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel>
-
-                        <TextBlock Text="SideStore"
-                                   Foreground="#F5F5F7"
-                                   FontSize="16"
-                                   FontWeight="SemiBold"/>
-
-                        <TextBlock x:Name="SideStorePairingStatusText"
-                                   Text="Not scanned"
-                                   Foreground="#6F6F77"
-                                   FontSize="10"
-                                   Margin="0,7,0,0"/>
-
-                    </StackPanel>
-
-                    <Button Grid.Column="1"
-                            Content="Place"
-                            Style="{StaticResource PairingButtonSecondary}"
-                            Click="PlaceSideStoreButton_Click"
-                            VerticalAlignment="Center"/>
-
-                </Grid>
-
-            </Border>
-
-
-            <Border Grid.Column="2"
-                    Style="{StaticResource PairingCard}">
-
-                <Grid>
-
-                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="14"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel>
+                    <Border Grid.Column="0"
+                            Style="{StaticResource Card}">
 
-                        <TextBlock Text="LiveContainer"
-                                   Foreground="#F5F5F7"
-                                   FontSize="16"
-                                   FontWeight="SemiBold"/>
+                        <Grid>
 
-                        <TextBlock x:Name="LiveContainerPairingStatusText"
-                                   Text="Not scanned"
-                                   Foreground="#6F6F77"
-                                   FontSize="10"
-                                   Margin="0,7,0,0"/>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                    </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="1"
-                            Content="Place"
-                            Style="{StaticResource PairingButtonSecondary}"
-                            Click="PlaceLiveContainerButton_Click"
-                            VerticalAlignment="Center"/>
+                                <Border Width="44"
+                                        Height="44"
+                                        CornerRadius="12"
+                                        Background="#F5F5F7"
+                                        Margin="0,0,12,0">
+                                    <TextBlock Text="S"
+                                               Foreground="#080809"
+                                               FontSize="15"
+                                               FontWeight="ExtraBold"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+
+                                <StackPanel Grid.Column="1"
+                                            VerticalAlignment="Center">
+                                    <TextBlock Text="SideStore"
+                                               Foreground="#F5F5F7"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="SideStorePairingStatusText"
+                                               Text="Not scanned"
+                                               Foreground="#707078"
+                                               FontSize="10"
+                                               Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1"
+                                       Text="Places ALTPairingFile.mobiledevicepairing in the SideStore Documents folder."
+                                       Foreground="#62626A"
+                                       FontSize="9"
+                                       TextWrapping="Wrap"
+                                       Margin="0,16,0,14"/>
+
+                            <Button x:Name="SideStorePairingButton"
+                                    Grid.Row="2"
+                                    Content="Configure SideStore"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Click="PlaceSideStoreButton_Click"/>
+
+                        </Grid>
+
+                    </Border>
+
+                    <Border Grid.Column="2"
+                            Style="{StaticResource Card}">
+
+                        <Grid>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Width="44"
+                                        Height="44"
+                                        CornerRadius="12"
+                                        Background="#1A1A1F"
+                                        Margin="0,0,12,0">
+                                    <TextBlock Text="L"
+                                               Foreground="#F5F5F7"
+                                               FontSize="15"
+                                               FontWeight="ExtraBold"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+
+                                <StackPanel Grid.Column="1"
+                                            VerticalAlignment="Center">
+                                    <TextBlock Text="LiveContainer"
+                                               Foreground="#F5F5F7"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="LiveContainerPairingStatusText"
+                                               Text="Not scanned"
+                                               Foreground="#707078"
+                                               FontSize="10"
+                                               Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1"
+                                       Text="Places the pairing file in LiveContainer's SideStore Documents path."
+                                       Foreground="#62626A"
+                                       FontSize="9"
+                                       TextWrapping="Wrap"
+                                       Margin="0,16,0,14"/>
+
+                            <Button x:Name="LiveContainerPairingButton"
+                                    Grid.Row="2"
+                                    Content="Configure LiveContainer"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Click="PlaceLiveContainerButton_Click"/>
+
+                        </Grid>
+
+                    </Border>
 
                 </Grid>
 
-            </Border>
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,14">
 
-        </Grid>
+                    <Grid>
 
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Width="38"
+                                Height="38"
+                                CornerRadius="11"
+                                Background="#17171C"
+                                Margin="0,0,13,0">
+                            <TextBlock Text="✓"
+                                       Foreground="#73F5A4"
+                                       FontSize="15"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+
+                        <StackPanel Grid.Column="1"
+                                    VerticalAlignment="Center">
+                            <TextBlock x:Name="PairingStatusText"
+                                       Text="Connect your iPhone with USB, unlock it, and press Rescan."
+                                       Foreground="#F5F5F7"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       TextWrapping="Wrap"/>
+                            <TextBlock x:Name="PairingDetailsText"
+                                       Text="AmaazLoader supports automatic pairing placement for SideStore and LiveContainer."
+                                       Foreground="#62626A"
+                                       FontSize="9"
+                                       TextWrapping="Wrap"
+                                       Margin="0,5,15,0"/>
+                        </StackPanel>
+
+                        <Button x:Name="RescanButton"
+                                Grid.Column="2"
+                                Content="Rescan"
+                                Style="{StaticResource SecondaryButton}"
+                                Click="RescanButton_Click"
+                                VerticalAlignment="Center"/>
+
+                    </Grid>
+
+                </Border>
+
+                <Border Style="{StaticResource Card}"
+                        Padding="16">
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Text="ADVANCED"
+                                       Foreground="#62626A"
+                                       FontSize="9"
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="Export a pairing backup"
+                                       Foreground="#B4B4BB"
+                                       FontSize="10"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <Button x:Name="ExportPairingButton"
+                                Grid.Column="1"
+                                Content="Export"
+                                Style="{StaticResource SecondaryButton}"
+                                Click="ExportPairingButton_Click"/>
+
+                    </Grid>
+
+                </Border>
+
+            </StackPanel>
+
+        </ScrollViewer>
 
         <Border Grid.Row="2"
-                Style="{StaticResource PairingCard}"
-                Margin="0,0,0,14">
+                Background="#08080A"
+                BorderBrush="#17171B"
+                BorderThickness="0,1,0,0">
 
-            <StackPanel>
+            <Grid Margin="26,0">
 
-                <TextBlock Text="AUTOMATIC SETUP"
-                           Foreground="#6A6A72"
-                           FontSize="10"
-                           FontWeight="Bold"/>
+                <TextBlock Text="Keep your device connected and unlocked while pairing is being configured."
+                           Foreground="#5F5F67"
+                           FontSize="9"
+                           VerticalAlignment="Center"/>
 
-                <TextBlock Text="Place the pairing file in every supported app currently installed on your device."
-                           Foreground="#B0B0B7"
-                           FontSize="11"
-                           TextWrapping="Wrap"
-                           Margin="0,7,0,14"/>
+                <Button Grid.Column="1"
+                        Content="Close"
+                        Style="{StaticResource SecondaryButton}"
+                        Click="CloseButton_Click"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"/>
 
-                <Button x:Name="PlaceAllButton"
-                        Content="Place in SideStore &amp; LiveContainer"
-                        Style="{StaticResource PairingButton}"
-                        Click="PlaceAllButton_Click"/>
-
-            </StackPanel>
+            </Grid>
 
         </Border>
-
-
-        <Border Grid.Row="3"
-                Style="{StaticResource PairingCard}">
-
-            <StackPanel>
-
-                <TextBlock Text="PAIRING STATUS"
-                           Foreground="#6A6A72"
-                           FontSize="10"
-                           FontWeight="Bold"/>
-
-                <TextBlock x:Name="PairingStatusText"
-                           Text="Connect your iPhone with USB, unlock it, and press Rescan."
-                           Foreground="#F5F5F7"
-                           FontSize="12"
-                           FontWeight="SemiBold"
-                           TextWrapping="Wrap"
-                           Margin="0,9,0,0"/>
-
-                <TextBlock x:Name="PairingDetailsText"
-                           Text="AmaazLoader supports SideStore and LiveContainer pairing placement."
-                           Foreground="#66666E"
-                           FontSize="10"
-                           TextWrapping="Wrap"
-                           Margin="0,7,0,0"/>
-
-            </StackPanel>
-
-        </Border>
-
-
-        <Grid Grid.Row="4"
-              Margin="0,16,0,0">
-
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-
-            <Button Grid.Column="0"
-                    Content="Export Pairing Backup"
-                    Style="{StaticResource PairingButtonSecondary}"
-                    Click="ExportPairingButton_Click"
-                    HorizontalAlignment="Left"/>
-
-            <Button Grid.Column="1"
-                    Content="Rescan"
-                    Style="{StaticResource PairingButtonSecondary}"
-                    Click="RescanButton_Click"/>
-
-            <Button Grid.Column="3"
-                    Content="Close"
-                    Style="{StaticResource PairingButton}"
-                    Click="CloseButton_Click"/>
-
-        </Grid>
 
     </Grid>
 
