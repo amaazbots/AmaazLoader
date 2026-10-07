@@ -579,19 +579,31 @@
                     </Button>
 
 
-                    <Border Width="50"
-                            Height="50"
-                            CornerRadius="14"
-                            Background="#121216"
+                    <Button x:Name="PairingButton"
+                            Style="{StaticResource SidebarButton}"
+                            ToolTip="Pairing Tools"
+                            Click="PairingButton_Click"
                             HorizontalAlignment="Center">
 
-                        <TextBlock Text="•••"
-                                   Foreground="#72727A"
-                                   FontSize="14"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
 
-                    </Border>
+                            <TextBlock Text="↔"
+                                       Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                       FontSize="17"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
+
+                            <TextBlock Text="Pair"
+                                       Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                       FontSize="8"
+                                       FontWeight="SemiBold"
+                                       Margin="0,1,0,0"
+                                       HorizontalAlignment="Center"/>
+
+                        </StackPanel>
+
+                    </Button>
 
                 </StackPanel>
 
@@ -1044,7 +1056,7 @@
                                                        FontSize="14"
                                                        FontWeight="SemiBold"/>
 
-                                            <TextBlock Text="Run and manage multiple apps from one container."
+                                            <TextBlock Text="LiveContainer + SideStore package with automatic pairing."
                                                        Foreground="#66666E"
                                                        FontSize="10"
                                                        Margin="0,5,0,0"/>
