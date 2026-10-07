@@ -29,6 +29,8 @@ public partial class MainWindow : Window
     private readonly IpaSigner ipaSigner;
     private readonly IpaInstaller ipaInstaller;
     private readonly AppleAccountManager appleAccountManager;
+    private readonly InstallerCatalogService installerCatalogService =
+        new();
     private readonly DispatcherTimer deviceTimer;
 
     private SigningInfo? currentSigningInfo;
@@ -42,6 +44,7 @@ public partial class MainWindow : Window
     private bool sideloadInProgress;
     private bool appleAuthenticationInProgress;
     private bool twoFactorPromptShowing;
+    private bool quickInstallInProgress;
 
     private int currentAnimatedProgress;
 
@@ -108,6 +111,124 @@ private static string RustBackendPath =>
             signingBackendManager.CheckBackend();
 
         ValidateSigning();
+    }
+
+    private async void QuickInstallSideStoreButton_Click(
+        object sender,
+        RoutedEventArgs e)
+    {
+        await RunQuickInstallAsync(
+            "sidestore",
+            "SideStore");
+    }
+
+    private async void QuickInstallLiveContainerButton_Click(
+        object sender,
+        RoutedEventArgs e)
+    {
+        await RunQuickInstallAsync(
+            "livecontainer",
+            "LiveContainer");
+    }
+
+    private async Task RunQuickInstallAsync(
+        string appId,
+        string fallbackName)
+    {
+        if (quickInstallInProgress)
+            return;
+
+        quickInstallInProgress =
+            true;
+
+        QuickInstallSideStoreButton.IsEnabled =
+            false;
+
+        QuickInstallLiveContainerButton.IsEnabled =
+            false;
+
+        QuickInstallProgressBar.Value =
+            0;
+
+        QuickInstallStatusText.Text =
+            $"Preparing {fallbackName}...";
+
+        try
+        {
+            IReadOnlyList<InstallerCatalogItem> apps =
+                await installerCatalogService.LoadCatalogAsync();
+
+            InstallerCatalogItem? app =
+                apps.FirstOrDefault(
+                    item =>
+                        item.Id.Equals(
+                            appId,
+                            StringComparison.OrdinalIgnoreCase));
+
+            if (app == null)
+            {
+                throw new InvalidOperationException(
+                    $"{fallbackName} is not available in the installer catalog.");
+            }
+
+            InstallerResolvedDownload release =
+                await installerCatalogService.ResolveLatestReleaseAsync(
+                    app);
+
+            QuickInstallStatusText.Text =
+                $"Downloading {app.Name} {release.Version}...";
+
+            var progress =
+                new Progress<double>(
+                    value =>
+                    {
+                        QuickInstallProgressBar.Value =
+                            value;
+
+                        QuickInstallStatusText.Text =
+                            $"Downloading {app.Name}... {value:0}%";
+                    });
+
+            string ipaPath =
+                await installerCatalogService.DownloadAsync(
+                    release,
+                    progress);
+
+            LoadIpaFromPath(
+                ipaPath,
+                $"{app.Name} downloaded and loaded. Press Sideload IPA when ready.");
+
+            QuickInstallProgressBar.Value =
+                100;
+
+            QuickInstallStatusText.Text =
+                $"{app.Name} is ready to sideload ✓";
+        }
+        catch (Exception ex)
+        {
+            QuickInstallProgressBar.Value =
+                0;
+
+            QuickInstallStatusText.Text =
+                $"Could not prepare {fallbackName}.";
+
+            MessageBox.Show(
+                ex.Message,
+                "AmaazLoader",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+        finally
+        {
+            quickInstallInProgress =
+                false;
+
+            QuickInstallSideStoreButton.IsEnabled =
+                true;
+
+            QuickInstallLiveContainerButton.IsEnabled =
+                true;
+        }
     }
 
     private void InstallersButton_Click(
