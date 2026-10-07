@@ -354,6 +354,144 @@ private static string RustBackendPath =>
         ValidateSigning();
     }
 
+    private void MainWindow_DragOver(
+        object sender,
+        DragEventArgs e)
+    {
+        e.Effects =
+            DragDropEffects.None;
+
+        if (!e.Data.GetDataPresent(
+            DataFormats.FileDrop))
+        {
+            e.Handled =
+                true;
+
+            return;
+        }
+
+        string[]? files =
+            e.Data.GetData(
+                DataFormats.FileDrop)
+            as string[];
+
+        if (files?.Length == 1 &&
+            Path.GetExtension(
+                files[0])
+            .Equals(
+                ".ipa",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            e.Effects =
+                DragDropEffects.Copy;
+        }
+
+        e.Handled =
+            true;
+    }
+
+    private void MainWindow_Drop(
+        object sender,
+        DragEventArgs e)
+    {
+        if (!e.Data.GetDataPresent(
+            DataFormats.FileDrop))
+        {
+            return;
+        }
+
+        string[]? files =
+            e.Data.GetData(
+                DataFormats.FileDrop)
+            as string[];
+
+        if (files?.Length != 1)
+            return;
+
+        string path =
+            files[0];
+
+        if (!Path.GetExtension(
+                path)
+            .Equals(
+                ".ipa",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            MessageBox.Show(
+                "Drop a single .ipa file into AmaazLoader.",
+                "AmaazLoader",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+
+            return;
+        }
+
+        pendingPairingTarget =
+            null;
+
+        LoadIpaFromPath(
+            path,
+            "IPA loaded from drag & drop.");
+    }
+
+    private void ClearSelectedIpaButton_Click(
+        object sender,
+        RoutedEventArgs e)
+    {
+        selectedIpaPath =
+            null;
+
+        pendingPairingTarget =
+            null;
+
+        SelectedIpaText.Text =
+            "Drop an IPA here or choose a file";
+
+        AppNameText.Text =
+            "No app selected";
+
+        BundleIdText.Text =
+            "—";
+
+        VersionText.Text =
+            "—";
+
+        FileSizeText.Text =
+            "—";
+
+        StatusText.Text =
+            "Select an IPA to begin.";
+
+        QuickInstallProgressBar.Value =
+            0;
+
+        QuickInstallStatusText.Text =
+            "Choose an app above to download and prepare it for sideloading.";
+
+        ResetSideloadProgress();
+
+        ValidateSigning();
+    }
+
+    private void AdvancedOptionsButton_Click(
+        object sender,
+        RoutedEventArgs e)
+    {
+        bool opening =
+            AdvancedSigningPanel.Visibility !=
+            Visibility.Visible;
+
+        AdvancedSigningPanel.Visibility =
+            opening
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+        AdvancedOptionsButton.Content =
+            opening
+                ? "Advanced signing options  −"
+                : "Advanced signing options  +";
+    }
+
     private void SelectIpaButton_Click(
         object sender,
         RoutedEventArgs e)
