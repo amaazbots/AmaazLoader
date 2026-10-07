@@ -1,0 +1,17 @@
+bin/
+obj/
+publish/
+.vs/
+
+*.user
+*.suo
+
+*.p12
+*.pfx
+*.cer
+*.crt
+*.key
+*.mobileprovision
+*.provisionprofile
+
+settings.json

@@ -1,0 +1,1065 @@
+<Window x:Class="AmaazLoader.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AmaazLoader Settings"
+        Icon="Assets/AmaazLoader.ico"
+        Width="720"
+        Height="680"
+        MinWidth="720"
+        MinHeight="680"
+        MaxWidth="720"
+        MaxHeight="680"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Foreground="#F5F5F7">
+
+    <Window.Resources>
+
+        <SolidColorBrush x:Key="WindowBrush" Color="#09090B"/>
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#0F0F12"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#27272D"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="#73F5A4"/>
+
+        <Style x:Key="AmaazScrollBar"
+               TargetType="ScrollBar">
+
+            <Setter Property="Width"
+                    Value="10"/>
+
+            <Setter Property="Background"
+                    Value="Transparent"/>
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="ScrollBar">
+
+                        <Grid Background="Transparent">
+
+                            <Track x:Name="PART_Track"
+                                   IsDirectionReversed="True"
+                                   Focusable="False">
+
+                                <Track.DecreaseRepeatButton>
+
+                                    <RepeatButton
+                                        Command="ScrollBar.PageUpCommand"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        IsTabStop="False"
+                                        Focusable="False"
+                                        Opacity="0"/>
+
+                                </Track.DecreaseRepeatButton>
+
+
+                                <Track.Thumb>
+
+                                    <Thumb Margin="2">
+
+                                        <Thumb.Template>
+
+                                            <ControlTemplate TargetType="Thumb">
+
+                                                <Border x:Name="ThumbBorder"
+                                                        Width="5"
+                                                        MinHeight="32"
+                                                        Background="#35353B"
+                                                        CornerRadius="3"
+                                                        HorizontalAlignment="Center"/>
+
+                                                <ControlTemplate.Triggers>
+
+                                                    <Trigger Property="IsMouseOver"
+                                                             Value="True">
+
+                                                        <Setter TargetName="ThumbBorder"
+                                                                Property="Background"
+                                                                Value="#626269"/>
+
+                                                        <Setter TargetName="ThumbBorder"
+                                                                Property="Width"
+                                                                Value="6"/>
+
+                                                    </Trigger>
+
+                                                </ControlTemplate.Triggers>
+
+                                            </ControlTemplate>
+
+                                        </Thumb.Template>
+
+                                    </Thumb>
+
+                                </Track.Thumb>
+
+
+                                <Track.IncreaseRepeatButton>
+
+                                    <RepeatButton
+                                        Command="ScrollBar.PageDownCommand"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        IsTabStop="False"
+                                        Focusable="False"
+                                        Opacity="0"/>
+
+                                </Track.IncreaseRepeatButton>
+
+                            </Track>
+
+                        </Grid>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+
+            </Setter>
+
+        </Style>
+
+
+        <Style x:Key="SettingsCard"
+               TargetType="Border">
+
+            <Setter Property="Background"
+                    Value="{StaticResource SurfaceBrush}"/>
+
+            <Setter Property="BorderBrush"
+                    Value="{StaticResource BorderBrush}"/>
+
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+
+            <Setter Property="CornerRadius"
+                    Value="16"/>
+
+            <Setter Property="Padding"
+                    Value="20"/>
+
+            <Setter Property="Margin"
+                    Value="0,0,0,14"/>
+
+        </Style>
+
+
+        <Style x:Key="SettingsButtonStyle"
+               TargetType="Button">
+
+            <Setter Property="Height"
+                    Value="42"/>
+
+            <Setter Property="Foreground"
+                    Value="#F5F5F7"/>
+
+            <Setter Property="Background"
+                    Value="#18181D"/>
+
+            <Setter Property="BorderBrush"
+                    Value="#303036"/>
+
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+
+            <Setter Property="FontSize"
+                    Value="12"/>
+
+            <Setter Property="FontWeight"
+                    Value="SemiBold"/>
+
+            <Setter Property="Padding"
+                    Value="16,8"/>
+
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Center"/>
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="Button">
+
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="11"
+                                Padding="{TemplateBinding Padding}">
+
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#24242A"/>
+
+                                <Setter TargetName="ButtonBorder"
+                                        Property="BorderBrush"
+                                        Value="#3B3B42"/>
+
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#303037"/>
+
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+
+            </Setter>
+
+        </Style>
+
+
+        <Style x:Key="PrimaryButtonStyle"
+               TargetType="Button">
+
+            <Setter Property="Height"
+                    Value="44"/>
+
+            <Setter Property="Foreground"
+                    Value="#080809"/>
+
+            <Setter Property="Background"
+                    Value="#F5F5F7"/>
+
+            <Setter Property="BorderBrush"
+                    Value="#FFFFFF"/>
+
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+
+            <Setter Property="FontSize"
+                    Value="12"/>
+
+            <Setter Property="FontWeight"
+                    Value="Bold"/>
+
+            <Setter Property="Padding"
+                    Value="20,9"/>
+
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="Button">
+
+                        <Border x:Name="PrimaryBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="11"
+                                Padding="{TemplateBinding Padding}">
+
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+
+                                <Setter TargetName="PrimaryBorder"
+                                        Property="Background"
+                                        Value="#FFFFFF"/>
+
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+
+                                <Setter TargetName="PrimaryBorder"
+                                        Property="Background"
+                                        Value="#D7D7DB"/>
+
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+
+            </Setter>
+
+        </Style>
+
+
+        <Style x:Key="AmaazCheckBox"
+               TargetType="CheckBox">
+
+            <Setter Property="Foreground"
+                    Value="#DADADF"/>
+
+            <Setter Property="FontSize"
+                    Value="12"/>
+
+            <Setter Property="Margin"
+                    Value="0,8,0,8"/>
+
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="CheckBox">
+
+                        <StackPanel Orientation="Horizontal">
+
+                            <Border x:Name="CheckBorder"
+                                    Width="19"
+                                    Height="19"
+                                    Background="#131317"
+                                    BorderBrush="#35353B"
+                                    BorderThickness="1"
+                                    CornerRadius="5"
+                                    Margin="0,0,10,0">
+
+                                <TextBlock x:Name="CheckMark"
+                                           Text="✓"
+                                           Foreground="#080809"
+                                           FontSize="12"
+                                           FontWeight="Bold"
+                                           Visibility="Collapsed"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+
+                            </Border>
+
+                            <ContentPresenter VerticalAlignment="Center"/>
+
+                        </StackPanel>
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsChecked"
+                                     Value="True">
+
+                                <Setter TargetName="CheckBorder"
+                                        Property="Background"
+                                        Value="#F5F5F7"/>
+
+                                <Setter TargetName="CheckBorder"
+                                        Property="BorderBrush"
+                                        Value="#FFFFFF"/>
+
+                                <Setter TargetName="CheckMark"
+                                        Property="Visibility"
+                                        Value="Visible"/>
+
+                            </Trigger>
+
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+
+                                <Setter TargetName="CheckBorder"
+                                        Property="BorderBrush"
+                                        Value="#5A5A62"/>
+
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+
+            </Setter>
+
+        </Style>
+
+
+        <Style x:Key="CloseButtonStyle"
+               TargetType="Button">
+
+            <Setter Property="Width"
+                    Value="34"/>
+
+            <Setter Property="Height"
+                    Value="34"/>
+
+            <Setter Property="Background"
+                    Value="Transparent"/>
+
+            <Setter Property="Foreground"
+                    Value="#76767E"/>
+
+            <Setter Property="BorderThickness"
+                    Value="0"/>
+
+            <Setter Property="FontSize"
+                    Value="18"/>
+
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="Button">
+
+                        <Border x:Name="CloseBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="9">
+
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+
+                                <Setter TargetName="CloseBorder"
+                                        Property="Background"
+                                        Value="#1B1B20"/>
+
+                                <Setter Property="Foreground"
+                                        Value="#FFFFFF"/>
+
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+
+            </Setter>
+
+        </Style>
+
+    </Window.Resources>
+
+
+    <Border Background="{StaticResource WindowBrush}"
+            BorderBrush="#29292F"
+            BorderThickness="1"
+            CornerRadius="22">
+
+        <Border.Effect>
+
+            <DropShadowEffect
+                Color="#000000"
+                BlurRadius="36"
+                ShadowDepth="0"
+                Opacity="0.75"/>
+
+        </Border.Effect>
+
+
+        <Grid>
+
+            <Grid.RowDefinitions>
+
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+
+            </Grid.RowDefinitions>
+
+
+            <!-- TITLE BAR -->
+
+            <Grid Grid.Row="0"
+                  MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+
+                <Grid.ColumnDefinitions>
+
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+
+                </Grid.ColumnDefinitions>
+
+
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="20,0,0,0">
+
+                    <Border Width="30"
+                            Height="30"
+                            CornerRadius="9"
+                            Background="#F5F5F7"
+                            Margin="0,0,10,0">
+
+                        <Image Source="Assets/AmaazLoader.ico"
+                               Width="24"
+                               Height="24"
+                               Stretch="Uniform"/>
+
+                    </Border>
+
+                    <TextBlock Text="AmaazLoader Settings"
+                               Foreground="#A5A5AC"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"/>
+
+                </StackPanel>
+
+
+                <Button Grid.Column="1"
+                        Content="×"
+                        Style="{StaticResource CloseButtonStyle}"
+                        Margin="0,0,14,0"
+                        VerticalAlignment="Center"
+                        Click="CloseButton_Click"/>
+
+            </Grid>
+
+
+            <!-- CONTENT -->
+
+            <Grid Grid.Row="1"
+                  Margin="34,8,34,28">
+
+                <Grid.RowDefinitions>
+
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+
+                </Grid.RowDefinitions>
+
+
+                <StackPanel Grid.Row="0"
+                            Margin="0,0,0,22">
+
+                    <TextBlock Text="Settings"
+                               Foreground="#F5F5F7"
+                               FontSize="30"
+                               FontWeight="Bold"/>
+
+                    <TextBlock Text="Configure AmaazLoader"
+                               Foreground="#7D7D85"
+                               FontSize="13"
+                               Margin="0,6,0,0"/>
+
+                </StackPanel>
+
+
+                <ScrollViewer Grid.Row="1"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+
+                    <ScrollViewer.Resources>
+
+                        <Style TargetType="ScrollBar"
+                               BasedOn="{StaticResource AmaazScrollBar}"/>
+
+                    </ScrollViewer.Resources>
+
+
+                    <StackPanel>
+
+
+                        <!-- GENERAL -->
+
+                        <TextBlock Text="GENERAL"
+                                   Foreground="#66666E"
+                                   FontSize="10"
+                                   FontWeight="Bold"
+                                   Margin="2,0,0,10"/>
+
+
+                        <Border Style="{StaticResource SettingsCard}">
+
+                            <StackPanel>
+
+                                <TextBlock Text="Sideloading"
+                                           Foreground="#F5F5F7"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"/>
+
+                                <TextBlock Text="Control how AmaazLoader handles connected devices and temporary files."
+                                           Foreground="#707078"
+                                           FontSize="11"
+                                           TextWrapping="Wrap"
+                                           Margin="0,6,0,12"/>
+
+                                <CheckBox x:Name="AutoDetectDeviceCheckBox"
+                                          Content="Automatically detect connected devices"
+                                          IsChecked="True"
+                                          Style="{StaticResource AmaazCheckBox}"/>
+
+                                <CheckBox x:Name="AutoCleanCheckBox"
+                                          Content="Automatically clean temporary signed files"
+                                          IsChecked="False"
+                                          Style="{StaticResource AmaazCheckBox}"/>
+
+                            </StackPanel>
+
+                        </Border>
+
+
+                        <!-- TOOLS -->
+
+                        <Border Style="{StaticResource SettingsCard}">
+
+                            <StackPanel>
+
+                                <TextBlock Text="Signing &amp; Device Tools"
+                                           Foreground="#F5F5F7"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"/>
+
+                                <TextBlock Text="AmaazLoader uses its bundled tools automatically. Custom paths can still be selected if needed."
+                                           Foreground="#707078"
+                                           FontSize="11"
+                                           TextWrapping="Wrap"
+                                           Margin="0,6,0,18"/>
+
+
+                                <TextBlock Text="zsign"
+                                           Foreground="#F5F5F7"
+                                           FontSize="13"
+                                           FontWeight="SemiBold"/>
+
+                                <Border Background="#121216"
+                                        BorderBrush="#26262C"
+                                        BorderThickness="1"
+                                        CornerRadius="10"
+                                        Padding="12"
+                                        Margin="0,7,0,9">
+
+                                    <TextBlock x:Name="ZSignPathText"
+                                               Text="Loading..."
+                                               Foreground="#7F7F87"
+                                               FontSize="10"
+                                               TextWrapping="Wrap"/>
+
+                                </Border>
+
+                                <Button Content="Change zsign Location"
+                                        Style="{StaticResource SettingsButtonStyle}"
+                                        HorizontalAlignment="Left"
+                                        Click="ChangeZSignButton_Click"/>
+
+
+                                <Border Height="1"
+                                        Background="#202025"
+                                        Margin="0,18,0,18"/>
+
+
+                                <TextBlock Text="libimobiledevice"
+                                           Foreground="#F5F5F7"
+                                           FontSize="13"
+                                           FontWeight="SemiBold"/>
+
+                                <Border Background="#121216"
+                                        BorderBrush="#26262C"
+                                        BorderThickness="1"
+                                        CornerRadius="10"
+                                        Padding="12"
+                                        Margin="0,7,0,9">
+
+                                    <TextBlock x:Name="LibimobiledevicePathText"
+                                               Text="Loading..."
+                                               Foreground="#7F7F87"
+                                               FontSize="10"
+                                               TextWrapping="Wrap"/>
+
+                                </Border>
+
+                                <Button Content="Change Device Tools Location"
+                                        Style="{StaticResource SettingsButtonStyle}"
+                                        HorizontalAlignment="Left"
+                                        Click="ChangeLibimobiledeviceButton_Click"/>
+
+                            </StackPanel>
+
+                        </Border>
+
+
+                        <!-- OUTPUT -->
+
+                        <Border Style="{StaticResource SettingsCard}">
+
+                            <StackPanel>
+
+                                <TextBlock Text="Signed IPA Output"
+                                           Foreground="#F5F5F7"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"/>
+
+                                <TextBlock Text="Signed files are currently saved next to the original IPA."
+                                           Foreground="#707078"
+                                           FontSize="11"
+                                           TextWrapping="Wrap"
+                                           Margin="0,6,0,14"/>
+
+                                <Button Content="Change Output Folder"
+                                        Style="{StaticResource SettingsButtonStyle}"
+                                        HorizontalAlignment="Left"
+                                        Click="ChangeOutputFolderButton_Click"/>
+
+                            </StackPanel>
+
+                        </Border>
+
+
+                        <!-- COMMUNITY -->
+
+                        <TextBlock Text="COMMUNITY &amp; RESOURCES"
+                                   Foreground="#66666E"
+                                   FontSize="10"
+                                   FontWeight="Bold"
+                                   Margin="2,6,0,10"/>
+
+
+                        <Border Style="{StaticResource SettingsCard}">
+
+                            <StackPanel>
+
+                                <TextBlock Text="Amaazbots Community"
+                                           Foreground="#F5F5F7"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"/>
+
+                                <TextBlock Text="Tutorials, community support and more sideloading resources."
+                                           Foreground="#707078"
+                                           FontSize="11"
+                                           TextWrapping="Wrap"
+                                           Margin="0,6,0,18"/>
+
+
+                                <!-- YouTube -->
+
+                                <Grid>
+
+                                    <Grid.ColumnDefinitions>
+
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <Border Width="42"
+                                            Height="42"
+                                            Background="#151519"
+                                            BorderBrush="#29292F"
+                                            BorderThickness="1"
+                                            CornerRadius="12"
+                                            Margin="0,0,12,0">
+
+                                        <TextBlock Text="▶"
+                                                   Foreground="#F5F5F7"
+                                                   FontSize="14"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+
+                                    </Border>
+
+
+                                    <StackPanel Grid.Column="1"
+                                                VerticalAlignment="Center">
+
+                                        <TextBlock Text="YouTube"
+                                                   Foreground="#F5F5F7"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"/>
+
+                                        <TextBlock Text="@vTxMazi"
+                                                   Foreground="#74747C"
+                                                   FontSize="10"
+                                                   Margin="0,3,0,0"/>
+
+                                    </StackPanel>
+
+
+                                    <Button Grid.Column="2"
+                                            Content="Open"
+                                            Style="{StaticResource SettingsButtonStyle}"
+                                            Height="38"
+                                            Padding="15,6"
+                                            Click="OpenYouTubeButton_Click"/>
+
+                                </Grid>
+
+
+                                <Border Height="1"
+                                        Background="#202025"
+                                        Margin="0,15"/>
+
+
+                                <!-- Discord -->
+
+                                <Grid>
+
+                                    <Grid.ColumnDefinitions>
+
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <Border Width="42"
+                                            Height="42"
+                                            Background="#151519"
+                                            BorderBrush="#29292F"
+                                            BorderThickness="1"
+                                            CornerRadius="12"
+                                            Margin="0,0,12,0">
+
+                                        <TextBlock Text="D"
+                                                   Foreground="#F5F5F7"
+                                                   FontSize="15"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+
+                                    </Border>
+
+
+                                    <StackPanel Grid.Column="1"
+                                                VerticalAlignment="Center">
+
+                                        <TextBlock Text="Discord"
+                                                   Foreground="#F5F5F7"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"/>
+
+                                        <TextBlock Text="Join the Amaazbots community"
+                                                   Foreground="#74747C"
+                                                   FontSize="10"
+                                                   Margin="0,3,0,0"/>
+
+                                    </StackPanel>
+
+
+                                    <Button Grid.Column="2"
+                                            Content="Join"
+                                            Style="{StaticResource SettingsButtonStyle}"
+                                            Height="38"
+                                            Padding="15,6"
+                                            Click="OpenDiscordButton_Click"/>
+
+                                </Grid>
+
+
+                                <Border Height="1"
+                                        Background="#202025"
+                                        Margin="0,15"/>
+
+
+                                <!-- Website -->
+
+                                <Grid>
+
+                                    <Grid.ColumnDefinitions>
+
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <Border Width="42"
+                                            Height="42"
+                                            Background="#151519"
+                                            BorderBrush="#29292F"
+                                            BorderThickness="1"
+                                            CornerRadius="12"
+                                            Margin="0,0,12,0">
+
+                                        <TextBlock Text="↗"
+                                                   Foreground="#F5F5F7"
+                                                   FontSize="16"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+
+                                    </Border>
+
+
+                                    <StackPanel Grid.Column="1"
+                                                VerticalAlignment="Center">
+
+                                        <TextBlock Text="Amaazbots Resources"
+                                                   Foreground="#F5F5F7"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"/>
+
+                                        <TextBlock Text="Sideloading, jailbreak and emulator resources"
+                                                   Foreground="#74747C"
+                                                   FontSize="10"
+                                                   Margin="0,3,0,0"/>
+
+                                    </StackPanel>
+
+
+                                    <Button Grid.Column="2"
+                                            Content="Visit"
+                                            Style="{StaticResource SettingsButtonStyle}"
+                                            Height="38"
+                                            Padding="15,6"
+                                            Click="OpenWebsiteButton_Click"/>
+
+                                </Grid>
+
+                            </StackPanel>
+
+                        </Border>
+
+
+                        <!-- ABOUT -->
+
+                        <TextBlock Text="ABOUT"
+                                   Foreground="#66666E"
+                                   FontSize="10"
+                                   FontWeight="Bold"
+                                   Margin="2,6,0,10"/>
+
+
+                        <Border Style="{StaticResource SettingsCard}"
+                                Margin="0">
+
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+
+                                </Grid.ColumnDefinitions>
+
+
+                                <Border Width="52"
+                                        Height="52"
+                                        Background="#F5F5F7"
+                                        CornerRadius="15"
+                                        Margin="0,0,15,0">
+
+                                    <Image Source="Assets/AmaazLoader.ico"
+                                           Width="42"
+                                           Height="42"
+                                           Stretch="Uniform"/>
+
+                                </Border>
+
+
+                                <StackPanel Grid.Column="1"
+                                            VerticalAlignment="Center">
+
+                                    <TextBlock Text="AmaazLoader"
+                                               Foreground="#F5F5F7"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"/>
+
+                                    <TextBlock Text="Windows iOS sideloading utility"
+                                               Foreground="#77777F"
+                                               FontSize="10"
+                                               Margin="0,4,0,0"/>
+
+                                </StackPanel>
+
+
+                                <Border Grid.Column="2"
+                                        Background="#121216"
+                                        BorderBrush="#29292F"
+                                        BorderThickness="1"
+                                        CornerRadius="9"
+                                        Padding="10,6"
+                                        VerticalAlignment="Center">
+
+                                    <TextBlock Text="v1.1.0"
+                                               Foreground="#DADADF"
+                                               FontSize="10"
+                                               FontWeight="SemiBold"/>
+
+                                </Border>
+
+                            </Grid>
+
+                        </Border>
+
+                    </StackPanel>
+
+                </ScrollViewer>
+
+
+                <!-- BOTTOM -->
+
+                <Grid Grid.Row="2"
+                      Margin="0,20,0,0">
+
+                    <Grid.ColumnDefinitions>
+
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+
+                    </Grid.ColumnDefinitions>
+
+
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center">
+
+                        <Ellipse Width="7"
+                                 Height="7"
+                                 Fill="#73F5A4"
+                                 Margin="0,0,7,0"/>
+
+                        <TextBlock Text="AmaazLoader is ready"
+                                   Foreground="#77777F"
+                                   FontSize="10"
+                                   VerticalAlignment="Center"/>
+
+                    </StackPanel>
+
+
+                    <Button Grid.Column="1"
+                            Content="Close"
+                            Width="100"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Click="CloseButton_Click"/>
+
+                </Grid>
+
+            </Grid>
+
+        </Grid>
+
+    </Border>
+
+</Window>

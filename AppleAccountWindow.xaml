@@ -1,0 +1,796 @@
+<Window x:Class="AmaazLoader.AppleAccountWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Connect Apple Account"
+        Icon="Assets/AmaazLoader.ico"
+        Width="540"
+        Height="610"
+        MinWidth="540"
+        MinHeight="610"
+        MaxWidth="540"
+        MaxHeight="610"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Foreground="#F5F5F7">
+
+    <Window.Resources>
+
+        <!-- ========================================================= -->
+        <!-- COLORS                                                    -->
+        <!-- ========================================================= -->
+
+        <SolidColorBrush x:Key="WindowBrush"
+                         Color="#09090B"/>
+
+        <SolidColorBrush x:Key="SurfaceBrush"
+                         Color="#0F0F12"/>
+
+        <SolidColorBrush x:Key="InputBrush"
+                         Color="#121216"/>
+
+        <SolidColorBrush x:Key="BorderBrush"
+                         Color="#27272D"/>
+
+        <SolidColorBrush x:Key="BorderHoverBrush"
+                         Color="#393940"/>
+
+        <SolidColorBrush x:Key="PrimaryTextBrush"
+                         Color="#F5F5F7"/>
+
+        <SolidColorBrush x:Key="SecondaryTextBrush"
+                         Color="#8B8B92"/>
+
+        <SolidColorBrush x:Key="MutedTextBrush"
+                         Color="#626269"/>
+
+        <SolidColorBrush x:Key="SuccessBrush"
+                         Color="#73F5A4"/>
+
+
+        <!-- ========================================================= -->
+        <!-- TEXTBOX                                                   -->
+        <!-- ========================================================= -->
+
+        <Style x:Key="InputTextBox"
+               TargetType="TextBox">
+
+            <Setter Property="Height"
+                    Value="50"/>
+
+            <Setter Property="FontSize"
+                    Value="14"/>
+
+            <Setter Property="Foreground"
+                    Value="#F5F5F7"/>
+
+            <Setter Property="Background"
+                    Value="{StaticResource InputBrush}"/>
+
+            <Setter Property="BorderBrush"
+                    Value="{StaticResource BorderBrush}"/>
+
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+
+            <Setter Property="Padding"
+                    Value="15,0"/>
+
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center"/>
+
+            <Setter Property="CaretBrush"
+                    Value="White"/>
+
+            <Setter Property="SelectionBrush"
+                    Value="#424249"/>
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="TextBox">
+
+                        <Border x:Name="InputBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="13">
+
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"/>
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+
+                                <Setter TargetName="InputBorder"
+                                        Property="BorderBrush"
+                                        Value="#3B3B42"/>
+
+                            </Trigger>
+
+                            <Trigger Property="IsKeyboardFocused"
+                                     Value="True">
+
+                                <Setter TargetName="InputBorder"
+                                        Property="BorderBrush"
+                                        Value="#686870"/>
+
+                                <Setter TargetName="InputBorder"
+                                        Property="Background"
+                                        Value="#151519"/>
+
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+
+            </Setter>
+
+        </Style>
+
+
+        <!-- ========================================================= -->
+        <!-- PASSWORD BOX                                              -->
+        <!-- ========================================================= -->
+
+        <Style x:Key="InputPasswordBox"
+               TargetType="PasswordBox">
+
+            <Setter Property="Height"
+                    Value="50"/>
+
+            <Setter Property="FontSize"
+                    Value="14"/>
+
+            <Setter Property="Foreground"
+                    Value="#F5F5F7"/>
+
+            <Setter Property="Background"
+                    Value="{StaticResource InputBrush}"/>
+
+            <Setter Property="BorderBrush"
+                    Value="{StaticResource BorderBrush}"/>
+
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+
+            <Setter Property="Padding"
+                    Value="15,0"/>
+
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center"/>
+
+            <Setter Property="CaretBrush"
+                    Value="White"/>
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="PasswordBox">
+
+                        <Border x:Name="PasswordBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="13">
+
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"/>
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+
+                                <Setter TargetName="PasswordBorder"
+                                        Property="BorderBrush"
+                                        Value="#3B3B42"/>
+
+                            </Trigger>
+
+                            <Trigger Property="IsKeyboardFocused"
+                                     Value="True">
+
+                                <Setter TargetName="PasswordBorder"
+                                        Property="BorderBrush"
+                                        Value="#686870"/>
+
+                                <Setter TargetName="PasswordBorder"
+                                        Property="Background"
+                                        Value="#151519"/>
+
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+
+            </Setter>
+
+        </Style>
+
+
+        <!-- ========================================================= -->
+        <!-- SECONDARY BUTTON                                          -->
+        <!-- ========================================================= -->
+
+        <Style x:Key="CancelButtonStyle"
+               TargetType="Button">
+
+            <Setter Property="Height"
+                    Value="48"/>
+
+            <Setter Property="Foreground"
+                    Value="#F5F5F7"/>
+
+            <Setter Property="Background"
+                    Value="#17171B"/>
+
+            <Setter Property="BorderBrush"
+                    Value="#2C2C32"/>
+
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+
+            <Setter Property="FontSize"
+                    Value="13"/>
+
+            <Setter Property="FontWeight"
+                    Value="SemiBold"/>
+
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="Button">
+
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12">
+
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#202025"/>
+
+                                <Setter TargetName="ButtonBorder"
+                                        Property="BorderBrush"
+                                        Value="#3A3A41"/>
+
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#29292F"/>
+
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+
+            </Setter>
+
+        </Style>
+
+
+        <!-- ========================================================= -->
+        <!-- PRIMARY BUTTON                                            -->
+        <!-- ========================================================= -->
+
+        <Style x:Key="ConnectButtonStyle"
+               TargetType="Button">
+
+            <Setter Property="Height"
+                    Value="48"/>
+
+            <Setter Property="Foreground"
+                    Value="#080809"/>
+
+            <Setter Property="Background"
+                    Value="#F5F5F7"/>
+
+            <Setter Property="BorderBrush"
+                    Value="#FFFFFF"/>
+
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+
+            <Setter Property="FontSize"
+                    Value="13"/>
+
+            <Setter Property="FontWeight"
+                    Value="Bold"/>
+
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="Button">
+
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12">
+
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#FFFFFF"/>
+
+                                <Setter Property="Effect">
+
+                                    <Setter.Value>
+
+                                        <DropShadowEffect
+                                            Color="#FFFFFF"
+                                            BlurRadius="16"
+                                            ShadowDepth="0"
+                                            Opacity="0.10"/>
+
+                                    </Setter.Value>
+
+                                </Setter>
+
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#D7D7DB"/>
+
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled"
+                                     Value="False">
+
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#26262B"/>
+
+                                <Setter TargetName="ButtonBorder"
+                                        Property="BorderBrush"
+                                        Value="#26262B"/>
+
+                                <Setter Property="Foreground"
+                                        Value="#66666D"/>
+
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+
+            </Setter>
+
+        </Style>
+
+
+        <!-- ========================================================= -->
+        <!-- CLOSE BUTTON                                              -->
+        <!-- ========================================================= -->
+
+        <Style x:Key="CloseButtonStyle"
+               TargetType="Button">
+
+            <Setter Property="Width"
+                    Value="34"/>
+
+            <Setter Property="Height"
+                    Value="34"/>
+
+            <Setter Property="Background"
+                    Value="Transparent"/>
+
+            <Setter Property="Foreground"
+                    Value="#76767E"/>
+
+            <Setter Property="BorderThickness"
+                    Value="0"/>
+
+            <Setter Property="FontSize"
+                    Value="18"/>
+
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="Button">
+
+                        <Border x:Name="CloseBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="9">
+
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+
+                                <Setter TargetName="CloseBorder"
+                                        Property="Background"
+                                        Value="#1B1B20"/>
+
+                                <Setter Property="Foreground"
+                                        Value="#FFFFFF"/>
+
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+
+                                <Setter TargetName="CloseBorder"
+                                        Property="Background"
+                                        Value="#29292F"/>
+
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+
+            </Setter>
+
+        </Style>
+
+    </Window.Resources>
+
+
+    <!-- ============================================================= -->
+    <!-- WINDOW BODY                                                   -->
+    <!-- ============================================================= -->
+
+    <Border Background="{StaticResource WindowBrush}"
+            BorderBrush="#29292F"
+            BorderThickness="1"
+            CornerRadius="22">
+
+        <Border.Effect>
+
+            <DropShadowEffect
+                Color="#000000"
+                BlurRadius="36"
+                ShadowDepth="0"
+                Opacity="0.75"/>
+
+        </Border.Effect>
+
+
+        <Grid>
+
+            <Grid.RowDefinitions>
+
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+
+            </Grid.RowDefinitions>
+
+
+            <!-- ===================================================== -->
+            <!-- TITLE BAR                                              -->
+            <!-- ===================================================== -->
+
+            <Grid Grid.Row="0"
+                  MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+
+                <Grid.ColumnDefinitions>
+
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+
+                </Grid.ColumnDefinitions>
+
+
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="20,0,0,0">
+
+                    <Border Width="30"
+                            Height="30"
+                            CornerRadius="9"
+                            Background="#F5F5F7"
+                            Margin="0,0,10,0">
+
+                        <Image Source="Assets/AmaazLoader.ico"
+                               Width="24"
+                               Height="24"
+                               Stretch="Uniform"/>
+
+                    </Border>
+
+                    <TextBlock Text="AmaazLoader"
+                               Foreground="#A5A5AC"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"/>
+
+                </StackPanel>
+
+
+                <Button Grid.Column="1"
+                        Content="×"
+                        Style="{StaticResource CloseButtonStyle}"
+                        Margin="0,0,14,0"
+                        VerticalAlignment="Center"
+                        Click="CloseButton_Click"/>
+
+            </Grid>
+
+
+            <!-- ===================================================== -->
+            <!-- CONTENT                                                -->
+            <!-- ===================================================== -->
+
+            <Grid Grid.Row="1"
+                  Margin="40,6,40,34">
+
+                <Grid.RowDefinitions>
+
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+
+                </Grid.RowDefinitions>
+
+
+                <!-- ================================================= -->
+                <!-- ICON                                               -->
+                <!-- ================================================= -->
+
+                <Border Grid.Row="0"
+                        Width="66"
+                        Height="66"
+                        HorizontalAlignment="Center"
+                        Background="#F5F5F7"
+                        CornerRadius="19">
+
+                    <TextBlock Text="A"
+                               Foreground="#080809"
+                               FontSize="27"
+                               FontWeight="ExtraBold"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+
+                </Border>
+
+
+                <!-- ================================================= -->
+                <!-- HEADING                                            -->
+                <!-- ================================================= -->
+
+                <TextBlock Grid.Row="1"
+                           Text="Connect Apple Account"
+                           Foreground="#F5F5F7"
+                           FontSize="27"
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center"
+                           Margin="0,20,0,0"/>
+
+
+                <TextBlock Grid.Row="2"
+                           Text="Sign in to enable automatic Apple signing."
+                           Foreground="#818188"
+                           FontSize="13"
+                           HorizontalAlignment="Center"
+                           Margin="0,7,0,28"/>
+
+
+                <!-- ================================================= -->
+                <!-- EMAIL                                              -->
+                <!-- ================================================= -->
+
+                <TextBlock Grid.Row="3"
+                           Text="APPLE ACCOUNT"
+                           Foreground="#66666E"
+                           FontSize="10"
+                           FontWeight="Bold"
+                           Margin="3,0,0,8"/>
+
+
+                <TextBox x:Name="EmailTextBox"
+                         Grid.Row="4"
+                         Style="{StaticResource InputTextBox}"
+                         ToolTip="Apple Account email address"/>
+
+
+                <!-- ================================================= -->
+                <!-- PASSWORD                                           -->
+                <!-- ================================================= -->
+
+                <TextBlock Grid.Row="5"
+                           Text="PASSWORD"
+                           Foreground="#66666E"
+                           FontSize="10"
+                           FontWeight="Bold"
+                           Margin="3,19,0,8"/>
+
+
+                <PasswordBox x:Name="PasswordInput"
+                             Grid.Row="6"
+                             Style="{StaticResource InputPasswordBox}"
+                             KeyDown="PasswordInput_KeyDown"/>
+
+
+                <!-- ================================================= -->
+                <!-- ERROR                                              -->
+                <!-- ================================================= -->
+
+                <TextBlock x:Name="ErrorText"
+                           Grid.Row="7"
+                           Visibility="Collapsed"
+                           Foreground="#FF6961"
+                           FontSize="11"
+                           TextWrapping="Wrap"
+                           Margin="3,10,0,0"/>
+
+
+                <!-- ================================================= -->
+                <!-- SECURITY NOTICE                                    -->
+                <!-- ================================================= -->
+
+                <Border Grid.Row="8"
+                        Background="#0D0D10"
+                        BorderBrush="#242429"
+                        BorderThickness="1"
+                        CornerRadius="14"
+                        Padding="15"
+                        Margin="0,19,0,19"
+                        VerticalAlignment="Top">
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+
+                        </Grid.ColumnDefinitions>
+
+
+                        <Border Width="34"
+                                Height="34"
+                                Background="#16161A"
+                                BorderBrush="#28282E"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                VerticalAlignment="Top">
+
+                            <TextBlock Text="●"
+                                       Foreground="#73F5A4"
+                                       FontSize="10"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+
+                        </Border>
+
+
+                        <StackPanel Grid.Column="1"
+                                    Margin="12,0,0,0">
+
+                            <TextBlock Text="Your credentials stay private"
+                                       Foreground="#E6E6E9"
+                                       FontSize="12"
+                                       FontWeight="SemiBold"/>
+
+                            <TextBlock Text="Your password is used only for Apple authentication and is not saved by AmaazLoader."
+                                       Foreground="#797980"
+                                       FontSize="11"
+                                       TextWrapping="Wrap"
+                                       Margin="0,5,0,0"/>
+
+                        </StackPanel>
+
+                    </Grid>
+
+                </Border>
+
+
+                <!-- ================================================= -->
+                <!-- ACTIONS                                            -->
+                <!-- ================================================= -->
+
+                <Grid Grid.Row="9">
+
+                    <Grid.ColumnDefinitions>
+
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+
+                    </Grid.ColumnDefinitions>
+
+
+                    <Button Grid.Column="0"
+                            Content="Cancel"
+                            Style="{StaticResource CancelButtonStyle}"
+                            IsCancel="True"
+                            Click="CancelButton_Click"/>
+
+
+                    <Button x:Name="ConnectButton"
+                            Grid.Column="2"
+                            Content="Connect"
+                            Style="{StaticResource ConnectButtonStyle}"
+                            IsDefault="True"
+                            Click="ConnectButton_Click"/>
+
+                </Grid>
+
+            </Grid>
+
+        </Grid>
+
+    </Border>
+
+</Window>

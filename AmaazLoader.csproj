@@ -1,0 +1,177 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+
+    <AssemblyName>AmaazLoader</AssemblyName>
+    <RootNamespace>AmaazLoader</RootNamespace>
+
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+
+    <Product>AmaazLoader</Product>
+    <Company>Amaazbots</Company>
+    <Authors>Amaazbots</Authors>
+    <Description>AmaazLoader - Windows iOS sideloading utility.</Description>
+    <Copyright>Copyright © 2026 Amaazbots</Copyright>
+
+    <ApplicationIcon>Assets\AmaazLoader.ico</ApplicationIcon>
+
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>false</PublishSingleFile>
+
+    <PublishDir>$(MSBuildProjectDirectory)\publish\AmaazLoader\</PublishDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="plist-cil" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\AmaazLoader.ico" />
+  </ItemGroup>
+
+  <!-- ============================================================= -->
+  <!-- BUILD RUST BACKEND                                             -->
+  <!-- Runs for both normal builds and publish                        -->
+  <!-- ============================================================= -->
+
+  <Target Name="BuildAmaazLoaderRustBackend"
+          BeforeTargets="Build;Publish">
+
+    <Error
+      Condition="'$(AMAAZLOADER_DEV_ROOT)' == ''"
+      Text="AMAAZLOADER_DEV_ROOT is not configured." />
+
+    <Error
+      Condition="!Exists('$(AMAAZLOADER_DEV_ROOT)\Backend\amaazloader-signing\Cargo.toml')"
+      Text="The AmaazLoader Rust backend Cargo.toml could not be found." />
+
+    <Message
+      Text="Building AmaazLoader Rust backend..."
+      Importance="high" />
+
+    <Exec
+      Command="cargo build --release --manifest-path &quot;$(AMAAZLOADER_DEV_ROOT)\Backend\amaazloader-signing\Cargo.toml&quot;" />
+
+  </Target>
+
+  <!-- ============================================================= -->
+  <!-- COPY RUNTIME FILES TO DEBUG / BUILD OUTPUT                     -->
+  <!-- Makes dotnet run work                                         -->
+  <!-- ============================================================= -->
+
+  <Target Name="CopyAmaazLoaderRuntimeFilesToBuild"
+          AfterTargets="Build">
+
+    <PropertyGroup>
+      <AmaazLoaderRustBackend>$(AMAAZLOADER_DEV_ROOT)\Backend\amaazloader-signing\target\release\amaazloader-signing.exe</AmaazLoaderRustBackend>
+      <AmaazLoaderZSignDirectory>$(AMAAZLOADER_DEV_ROOT)\Tools\zsign</AmaazLoaderZSignDirectory>
+      <AmaazLoaderLibimobiledeviceDirectory>$(AMAAZLOADER_DEV_ROOT)\Tools\libimobiledevice</AmaazLoaderLibimobiledeviceDirectory>
+    </PropertyGroup>
+
+    <Error
+      Condition="!Exists('$(AmaazLoaderRustBackend)')"
+      Text="The compiled AmaazLoader Rust backend could not be found at: $(AmaazLoaderRustBackend)" />
+
+    <Error
+      Condition="!Exists('$(AmaazLoaderZSignDirectory)\zsign.exe')"
+      Text="zsign.exe could not be found at: $(AmaazLoaderZSignDirectory)\zsign.exe" />
+
+    <Error
+      Condition="!Exists('$(AmaazLoaderLibimobiledeviceDirectory)')"
+      Text="The libimobiledevice folder could not be found at: $(AmaazLoaderLibimobiledeviceDirectory)" />
+
+    <ItemGroup>
+      <AmaazLoaderZSignFilesBuild Include="$(AmaazLoaderZSignDirectory)\**\*" />
+      <AmaazLoaderLibimobiledeviceFilesBuild Include="$(AmaazLoaderLibimobiledeviceDirectory)\**\*" />
+    </ItemGroup>
+
+    <MakeDir Directories="$(TargetDir)Backend" />
+    <MakeDir Directories="$(TargetDir)Tools\zsign" />
+    <MakeDir Directories="$(TargetDir)Tools\libimobiledevice" />
+
+    <Copy
+      SourceFiles="$(AmaazLoaderRustBackend)"
+      DestinationFiles="$(TargetDir)Backend\amaazloader-signing.exe"
+      SkipUnchangedFiles="true" />
+
+    <Copy
+      SourceFiles="@(AmaazLoaderZSignFilesBuild)"
+      DestinationFiles="@(AmaazLoaderZSignFilesBuild->'$(TargetDir)Tools\zsign\%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true" />
+
+    <Copy
+      SourceFiles="@(AmaazLoaderLibimobiledeviceFilesBuild)"
+      DestinationFiles="@(AmaazLoaderLibimobiledeviceFilesBuild->'$(TargetDir)Tools\libimobiledevice\%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true" />
+
+    <Message
+      Text="AmaazLoader runtime files copied to build output."
+      Importance="high" />
+
+  </Target>
+
+  <!-- ============================================================= -->
+  <!-- COPY RUNTIME FILES TO PUBLISH OUTPUT                           -->
+  <!-- Keeps your existing portable release behavior                 -->
+  <!-- ============================================================= -->
+
+  <Target Name="CopyAmaazLoaderRuntimeFilesToPublish"
+          AfterTargets="Publish">
+
+    <PropertyGroup>
+      <AmaazLoaderRustBackend>$(AMAAZLOADER_DEV_ROOT)\Backend\amaazloader-signing\target\release\amaazloader-signing.exe</AmaazLoaderRustBackend>
+      <AmaazLoaderZSignDirectory>$(AMAAZLOADER_DEV_ROOT)\Tools\zsign</AmaazLoaderZSignDirectory>
+      <AmaazLoaderLibimobiledeviceDirectory>$(AMAAZLOADER_DEV_ROOT)\Tools\libimobiledevice</AmaazLoaderLibimobiledeviceDirectory>
+    </PropertyGroup>
+
+    <Error
+      Condition="!Exists('$(AmaazLoaderRustBackend)')"
+      Text="The compiled AmaazLoader Rust backend could not be found at: $(AmaazLoaderRustBackend)" />
+
+    <Error
+      Condition="!Exists('$(AmaazLoaderZSignDirectory)\zsign.exe')"
+      Text="zsign.exe could not be found at: $(AmaazLoaderZSignDirectory)\zsign.exe" />
+
+    <Error
+      Condition="!Exists('$(AmaazLoaderLibimobiledeviceDirectory)')"
+      Text="The libimobiledevice folder could not be found at: $(AmaazLoaderLibimobiledeviceDirectory)" />
+
+    <ItemGroup>
+      <AmaazLoaderZSignFilesPublish Include="$(AmaazLoaderZSignDirectory)\**\*" />
+      <AmaazLoaderLibimobiledeviceFilesPublish Include="$(AmaazLoaderLibimobiledeviceDirectory)\**\*" />
+    </ItemGroup>
+
+    <MakeDir Directories="$(PublishDir)Backend" />
+    <MakeDir Directories="$(PublishDir)Tools\zsign" />
+    <MakeDir Directories="$(PublishDir)Tools\libimobiledevice" />
+
+    <Copy
+      SourceFiles="$(AmaazLoaderRustBackend)"
+      DestinationFiles="$(PublishDir)Backend\amaazloader-signing.exe"
+      SkipUnchangedFiles="true" />
+
+    <Copy
+      SourceFiles="@(AmaazLoaderZSignFilesPublish)"
+      DestinationFiles="@(AmaazLoaderZSignFilesPublish->'$(PublishDir)Tools\zsign\%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true" />
+
+    <Copy
+      SourceFiles="@(AmaazLoaderLibimobiledeviceFilesPublish)"
+      DestinationFiles="@(AmaazLoaderLibimobiledeviceFilesPublish->'$(PublishDir)Tools\libimobiledevice\%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true" />
+
+    <Message
+      Text="AmaazLoader portable runtime files copied successfully."
+      Importance="high" />
+
+  </Target>
+
+</Project>
