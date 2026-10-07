@@ -37,8 +37,8 @@ public partial class PairingManagerWindow : Window
         if (operationInProgress)
             return;
 
-        operationInProgress =
-            true;
+        SetBusyState(
+            true);
 
         PairingStatusText.Text =
             "Scanning installed apps...";
@@ -96,8 +96,8 @@ public partial class PairingManagerWindow : Window
         }
         finally
         {
-            operationInProgress =
-                false;
+            SetBusyState(
+                false);
         }
     }
 
@@ -138,8 +138,8 @@ public partial class PairingManagerWindow : Window
         if (operationInProgress)
             return;
 
-        operationInProgress =
-            true;
+        SetBusyState(
+            true);
 
         PairingStatusText.Text =
             message;
@@ -177,8 +177,8 @@ public partial class PairingManagerWindow : Window
         }
         finally
         {
-            operationInProgress =
-                false;
+            SetBusyState(
+                false);
         }
 
         await RefreshAppsAsync();
@@ -207,8 +207,8 @@ public partial class PairingManagerWindow : Window
         if (dialog.ShowDialog() != true)
             return;
 
-        operationInProgress =
-            true;
+        SetBusyState(
+            true);
 
         PairingStatusText.Text =
             "Generating pairing backup...";
@@ -238,9 +238,31 @@ public partial class PairingManagerWindow : Window
         }
         finally
         {
-            operationInProgress =
-                false;
+            SetBusyState(
+                false);
         }
+    }
+
+    private void SetBusyState(
+        bool busy)
+    {
+        operationInProgress =
+            busy;
+
+        PlaceAllButton.IsEnabled =
+            !busy;
+
+        SideStorePairingButton.IsEnabled =
+            !busy;
+
+        LiveContainerPairingButton.IsEnabled =
+            !busy;
+
+        RescanButton.IsEnabled =
+            !busy;
+
+        ExportPairingButton.IsEnabled =
+            !busy;
     }
 
     private void CloseButton_Click(
