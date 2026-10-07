@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace AmaazLoader;
 
@@ -46,15 +47,17 @@ public partial class InstallersWindow : Window
 
     private async Task LoadCatalogAsync()
     {
-        SetBusyState(true);
+        SetBusyState(
+            true);
 
         InstallerStatusText.Text =
-            "Loading installer catalog...";
+            "Loading apps...";
 
         InstallerDetailsText.Text =
             "Checking official release sources.";
 
-        DownloadProgressBar.Value = 0;
+        DownloadProgressBar.Value =
+            0;
 
         try
         {
@@ -67,14 +70,15 @@ public partial class InstallersWindow : Window
             foreach (InstallerCatalogItem app in apps)
             {
                 InstallerCardsPanel.Children.Add(
-                    CreateInstallerCard(app));
+                    CreateInstallerCard(
+                        app));
             }
 
             InstallerStatusText.Text =
-                $"{apps.Count} installers available";
+                $"{apps.Count} apps ready";
 
             InstallerDetailsText.Text =
-                "Choose an app to download its latest official IPA release.";
+                "Pick an app and press Install.";
         }
         catch (OperationCanceledException)
         {
@@ -82,31 +86,72 @@ public partial class InstallersWindow : Window
         catch (Exception ex)
         {
             InstallerStatusText.Text =
-                "Could not load installers";
+                "Could not load apps";
 
             InstallerDetailsText.Text =
                 ex.Message;
         }
         finally
         {
-            SetBusyState(false);
+            SetBusyState(
+                false);
         }
     }
 
     private Border CreateInstallerCard(
         InstallerCatalogItem app)
     {
+        bool recommended =
+            app.Id.Equals(
+                "sidestore",
+                StringComparison.OrdinalIgnoreCase);
+
         var card =
             new Border
             {
-                Width = 470,
-                MinHeight = 230,
-                Margin = new Thickness(0, 0, 18, 18),
-                Padding = new Thickness(22),
-                CornerRadius = new CornerRadius(18),
-                Background = new SolidColorBrush(Color.FromRgb(14, 14, 17)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(36, 36, 41)),
-                BorderThickness = new Thickness(1)
+                Width =
+                    455,
+
+                MinHeight =
+                    255,
+
+                Margin =
+                    new Thickness(
+                        0,
+                        0,
+                        18,
+                        18),
+
+                Padding =
+                    new Thickness(
+                        22),
+
+                CornerRadius =
+                    new CornerRadius(
+                        18),
+
+                Background =
+                    new SolidColorBrush(
+                        Color.FromRgb(
+                            14,
+                            14,
+                            17)),
+
+                BorderBrush =
+                    new SolidColorBrush(
+                        recommended
+                            ? Color.FromRgb(
+                                37,
+                                67,
+                                47)
+                            : Color.FromRgb(
+                                36,
+                                36,
+                                41)),
+
+                BorderThickness =
+                    new Thickness(
+                        1)
             };
 
         var root =
@@ -115,7 +160,8 @@ public partial class InstallersWindow : Window
         root.RowDefinitions.Add(
             new RowDefinition
             {
-                Height = GridLength.Auto
+                Height =
+                    GridLength.Auto
             });
 
         root.RowDefinitions.Add(
@@ -130,8 +176,10 @@ public partial class InstallersWindow : Window
         root.RowDefinitions.Add(
             new RowDefinition
             {
-                Height = GridLength.Auto
+                Height =
+                    GridLength.Auto
             });
+
 
         var header =
             new Grid();
@@ -140,7 +188,8 @@ public partial class InstallersWindow : Window
             new ColumnDefinition
             {
                 Width =
-                    new GridLength(56)
+                    new GridLength(
+                        58)
             });
 
         header.ColumnDefinitions.Add(
@@ -152,40 +201,78 @@ public partial class InstallersWindow : Window
                         GridUnitType.Star)
             });
 
+        header.ColumnDefinitions.Add(
+            new ColumnDefinition
+            {
+                Width =
+                    GridLength.Auto
+            });
+
+
         var icon =
             new Border
             {
-                Width = 46,
-                Height = 46,
-                CornerRadius = new CornerRadius(13),
+                Width =
+                    48,
+
+                Height =
+                    48,
+
+                CornerRadius =
+                    new CornerRadius(
+                        14),
+
                 Background =
                     new SolidColorBrush(
-                        app.Featured
-                            ? Color.FromRgb(245, 245, 247)
-                            : Color.FromRgb(26, 26, 31))
+                        recommended
+                            ? Color.FromRgb(
+                                245,
+                                245,
+                                247)
+                            : Color.FromRgb(
+                                28,
+                                28,
+                                33))
             };
 
         icon.Child =
             new TextBlock
             {
                 Text =
-                    string.IsNullOrWhiteSpace(app.Name)
+                    string.IsNullOrWhiteSpace(
+                        app.Name)
                         ? "A"
-                        : app.Name[..1].ToUpperInvariant(),
+                        : app.Name[..1]
+                            .ToUpperInvariant(),
 
                 Foreground =
                     new SolidColorBrush(
-                        app.Featured
-                            ? Color.FromRgb(8, 8, 9)
-                            : Color.FromRgb(245, 245, 247)),
+                        recommended
+                            ? Color.FromRgb(
+                                8,
+                                8,
+                                9)
+                            : Color.FromRgb(
+                                245,
+                                245,
+                                247)),
 
-                FontSize = 18,
-                FontWeight = FontWeights.ExtraBold,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center
+                FontSize =
+                    18,
+
+                FontWeight =
+                    FontWeights.ExtraBold,
+
+                HorizontalAlignment =
+                    HorizontalAlignment.Center,
+
+                VerticalAlignment =
+                    VerticalAlignment.Center
             };
 
-        header.Children.Add(icon);
+        header.Children.Add(
+            icon);
+
 
         var titlePanel =
             new StackPanel
@@ -198,37 +285,140 @@ public partial class InstallersWindow : Window
                         0)
             };
 
-        Grid.SetColumn(titlePanel, 1);
+        Grid.SetColumn(
+            titlePanel,
+            1);
 
         titlePanel.Children.Add(
             new TextBlock
             {
-                Text = app.Name,
-                Foreground = Brushes.White,
-                FontSize = 18,
-                FontWeight = FontWeights.Bold
+                Text =
+                    app.Name,
+
+                Foreground =
+                    Brushes.White,
+
+                FontSize =
+                    19,
+
+                FontWeight =
+                    FontWeights.Bold
             });
 
         titlePanel.Children.Add(
             new TextBlock
             {
                 Text =
-                    $"{app.Category}  •  Official GitHub Release",
+                    app.Category,
 
                 Foreground =
                     new SolidColorBrush(
                         Color.FromRgb(
-                            112,
-                            112,
-                            121)),
+                            111,
+                            111,
+                            120)),
 
-                FontSize = 11,
-                Margin = new Thickness(0, 4, 0, 0)
+                FontSize =
+                    10,
+
+                FontWeight =
+                    FontWeights.SemiBold,
+
+                Margin =
+                    new Thickness(
+                        0,
+                        5,
+                        0,
+                        0)
             });
 
-        header.Children.Add(titlePanel);
+        header.Children.Add(
+            titlePanel);
 
-        root.Children.Add(header);
+
+        var badge =
+            new Border
+            {
+                Background =
+                    new SolidColorBrush(
+                        recommended
+                            ? Color.FromRgb(
+                                15,
+                                33,
+                                21)
+                            : Color.FromRgb(
+                                22,
+                                22,
+                                27)),
+
+                BorderBrush =
+                    new SolidColorBrush(
+                        recommended
+                            ? Color.FromRgb(
+                                31,
+                                73,
+                                45)
+                            : Color.FromRgb(
+                                45,
+                                45,
+                                52)),
+
+                BorderThickness =
+                    new Thickness(
+                        1),
+
+                CornerRadius =
+                    new CornerRadius(
+                        10),
+
+                Padding =
+                    new Thickness(
+                        10,
+                        6,
+                        10,
+                        6),
+
+                VerticalAlignment =
+                    VerticalAlignment.Top
+            };
+
+        badge.Child =
+            new TextBlock
+            {
+                Text =
+                    recommended
+                        ? "RECOMMENDED"
+                        : "OFFICIAL",
+
+                Foreground =
+                    new SolidColorBrush(
+                        recommended
+                            ? Color.FromRgb(
+                                115,
+                                245,
+                                164)
+                            : Color.FromRgb(
+                                165,
+                                165,
+                                173)),
+
+                FontSize =
+                    9,
+
+                FontWeight =
+                    FontWeights.Bold
+            };
+
+        Grid.SetColumn(
+            badge,
+            2);
+
+        header.Children.Add(
+            badge);
+
+        root.Children.Add(
+            header);
+
 
         var body =
             new StackPanel
@@ -236,47 +426,106 @@ public partial class InstallersWindow : Window
                 Margin =
                     new Thickness(
                         0,
-                        18,
+                        20,
                         0,
-                        18)
+                        20)
             };
 
-        Grid.SetRow(body, 1);
+        Grid.SetRow(
+            body,
+            1);
 
         body.Children.Add(
             new TextBlock
             {
-                Text = app.Description,
+                Text =
+                    app.Description,
+
                 Foreground =
                     new SolidColorBrush(
                         Color.FromRgb(
-                            154,
-                            154,
-                            163)),
-                FontSize = 12,
-                TextWrapping = TextWrapping.Wrap,
-                LineHeight = 19
+                            166,
+                            166,
+                            175)),
+
+                FontSize =
+                    12,
+
+                TextWrapping =
+                    TextWrapping.Wrap,
+
+                LineHeight =
+                    19
             });
 
-        if (!string.IsNullOrWhiteSpace(app.Notes))
-        {
-            body.Children.Add(
-                new TextBlock
-                {
-                    Text = app.Notes,
-                    Foreground =
-                        new SolidColorBrush(
-                            Color.FromRgb(
-                                105,
-                                105,
-                                114)),
-                    FontSize = 10,
-                    TextWrapping = TextWrapping.Wrap,
-                    Margin = new Thickness(0, 10, 0, 0)
-                });
-        }
 
-        root.Children.Add(body);
+        var trustLine =
+            new StackPanel
+            {
+                Orientation =
+                    Orientation.Horizontal,
+
+                Margin =
+                    new Thickness(
+                        0,
+                        15,
+                        0,
+                        0)
+            };
+
+        trustLine.Children.Add(
+            new Ellipse
+            {
+                Width =
+                    7,
+
+                Height =
+                    7,
+
+                Fill =
+                    new SolidColorBrush(
+                        Color.FromRgb(
+                            115,
+                            245,
+                            164)),
+
+                Margin =
+                    new Thickness(
+                        0,
+                        0,
+                        7,
+                        0),
+
+                VerticalAlignment =
+                    VerticalAlignment.Center
+            });
+
+        trustLine.Children.Add(
+            new TextBlock
+            {
+                Text =
+                    "Latest official GitHub release",
+
+                Foreground =
+                    new SolidColorBrush(
+                        Color.FromRgb(
+                            119,
+                            151,
+                            130)),
+
+                FontSize =
+                    10,
+
+                FontWeight =
+                    FontWeights.SemiBold
+            });
+
+        body.Children.Add(
+            trustLine);
+
+        root.Children.Add(
+            body);
+
 
         var actions =
             new Grid();
@@ -293,53 +542,71 @@ public partial class InstallersWindow : Window
         actions.ColumnDefinitions.Add(
             new ColumnDefinition
             {
-                Width = GridLength.Auto
+                Width =
+                    GridLength.Auto
             });
 
-        Grid.SetRow(actions, 2);
+        Grid.SetRow(
+            actions,
+            2);
+
 
         var sourceButton =
             new Button
             {
-                Content = "View Source",
-                Tag = app,
-                Background = new SolidColorBrush(Color.FromRgb(27, 27, 32)),
-                Foreground = Brushes.White,
-                BorderBrush = new SolidColorBrush(Color.FromRgb(48, 48, 54)),
-                BorderThickness = new Thickness(1),
-                Padding = new Thickness(15, 9, 15, 9),
-                FontSize = 11,
-                FontWeight = FontWeights.SemiBold,
-                Cursor = System.Windows.Input.Cursors.Hand,
-                HorizontalAlignment = HorizontalAlignment.Left
+                Content =
+                    "Official Source ↗",
+
+                Tag =
+                    app,
+
+                Style =
+                    (Style)FindResource(
+                        "SecondaryButton"),
+
+                HorizontalAlignment =
+                    HorizontalAlignment.Left
             };
 
         sourceButton.Click +=
             SourceButton_Click;
 
-        actions.Children.Add(sourceButton);
+        actions.Children.Add(
+            sourceButton);
+
 
         var installButton =
             new Button
             {
-                Content = "Download & Sideload",
-                Tag = app,
+                Content =
+                    "Install",
+
+                Tag =
+                    app,
+
                 Style =
                     (Style)FindResource(
-                        "InstallerButton"),
-                MinWidth = 160
+                        "PrimaryButton"),
+
+                MinWidth =
+                    135
             };
 
         installButton.Click +=
             InstallButton_Click;
 
-        Grid.SetColumn(installButton, 1);
+        Grid.SetColumn(
+            installButton,
+            1);
 
-        actions.Children.Add(installButton);
+        actions.Children.Add(
+            installButton);
 
-        root.Children.Add(actions);
+        root.Children.Add(
+            actions);
 
-        card.Child = root;
+        card.Child =
+            root;
 
         return card;
     }
@@ -357,30 +624,43 @@ public partial class InstallersWindow : Window
             return;
         }
 
-        SetBusyState(true);
+        SetBusyState(
+            true);
 
-        button.IsEnabled = false;
+        string originalButtonText =
+            button.Content?.ToString()
+            ?? "Install";
 
-        DownloadProgressBar.Value = 0;
+        button.IsEnabled =
+            false;
+
+        button.Content =
+            "Preparing...";
+
+        DownloadProgressBar.Value =
+            0;
 
         try
         {
             InstallerStatusText.Text =
-                $"Finding latest {app.Name} release...";
+                $"Preparing {app.Name}...";
 
             InstallerDetailsText.Text =
-                app.Repository;
+                "Finding the latest official release.";
 
             InstallerResolvedDownload release =
                 await catalogService.ResolveLatestReleaseAsync(
                     app,
                     cancellationTokenSource.Token);
 
+            button.Content =
+                "Downloading...";
+
             InstallerStatusText.Text =
-                $"Downloading {app.Name} {release.Version}...";
+                $"Downloading {app.Name}";
 
             InstallerDetailsText.Text =
-                release.FileName;
+                $"{release.Version}  •  {release.FileName}";
 
             var progress =
                 new Progress<double>(
@@ -390,7 +670,7 @@ public partial class InstallersWindow : Window
                             value;
 
                         InstallerStatusText.Text =
-                            $"Downloading {app.Name}... {value:0}%";
+                            $"Downloading {app.Name}  •  {value:0}%";
                     });
 
             string ipaPath =
@@ -399,16 +679,26 @@ public partial class InstallersWindow : Window
                     progress,
                     cancellationTokenSource.Token);
 
-            SelectedIpaPath = ipaPath;
-            SelectedInstallerName = app.Name;
+            SelectedIpaPath =
+                ipaPath;
+
+            SelectedInstallerName =
+                app.Name;
+
+            button.Content =
+                "Ready ✓";
 
             InstallerStatusText.Text =
-                $"{app.Name} downloaded and verified";
+                $"{app.Name} is ready";
 
             InstallerDetailsText.Text =
-                "Returning to AmaazLoader to continue the sideload.";
+                "Returning to the main screen so you can sideload it.";
 
-            DialogResult = true;
+            await Task.Delay(
+                450);
+
+            DialogResult =
+                true;
 
             Close();
         }
@@ -418,14 +708,14 @@ public partial class InstallersWindow : Window
         catch (Exception ex)
         {
             InstallerStatusText.Text =
-                $"Could not install {app.Name}";
+                $"Could not prepare {app.Name}";
 
             InstallerDetailsText.Text =
                 ex.Message;
 
             MessageBox.Show(
                 ex.Message,
-                "AmaazLoader Installers",
+                "AmaazLoader",
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
         }
@@ -433,9 +723,14 @@ public partial class InstallersWindow : Window
         {
             if (IsVisible)
             {
-                button.IsEnabled = true;
+                button.Content =
+                    originalButtonText;
 
-                SetBusyState(false);
+                button.IsEnabled =
+                    true;
+
+                SetBusyState(
+                    false);
             }
         }
     }
@@ -446,7 +741,8 @@ public partial class InstallersWindow : Window
     {
         if (sender is not Button button ||
             button.Tag is not InstallerCatalogItem app ||
-            string.IsNullOrWhiteSpace(app.Repository))
+            string.IsNullOrWhiteSpace(
+                app.Repository))
         {
             return;
         }
@@ -459,14 +755,15 @@ public partial class InstallersWindow : Window
                     FileName =
                         $"https://github.com/{app.Repository}",
 
-                    UseShellExecute = true
+                    UseShellExecute =
+                        true
                 });
         }
         catch
         {
             MessageBox.Show(
-                "AmaazLoader could not open the project source.",
-                "AmaazLoader Installers",
+                "AmaazLoader could not open the official source.",
+                "AmaazLoader",
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
         }
@@ -475,9 +772,11 @@ public partial class InstallersWindow : Window
     private void SetBusyState(
         bool busy)
     {
-        operationInProgress = busy;
+        operationInProgress =
+            busy;
 
-        RefreshButton.IsEnabled = !busy;
+        RefreshButton.IsEnabled =
+            !busy;
     }
 
     protected override void OnClosed(
@@ -487,6 +786,7 @@ public partial class InstallersWindow : Window
 
         cancellationTokenSource.Dispose();
 
-        base.OnClosed(e);
+        base.OnClosed(
+            e);
     }
 }
