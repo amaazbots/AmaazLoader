@@ -110,6 +110,37 @@ private static string RustBackendPath =>
         ValidateSigning();
     }
 
+    private void InstallersButton_Click(
+        object sender,
+        RoutedEventArgs e)
+    {
+        var installersWindow =
+            new InstallersWindow
+            {
+                Owner = this
+            };
+
+        bool? result =
+            installersWindow.ShowDialog();
+
+        if (result != true ||
+            string.IsNullOrWhiteSpace(
+                installersWindow.SelectedIpaPath))
+        {
+            return;
+        }
+
+        string installerName =
+            string.IsNullOrWhiteSpace(
+                installersWindow.SelectedInstallerName)
+                ? "Installer"
+                : installersWindow.SelectedInstallerName;
+
+        LoadIpaFromPath(
+            installersWindow.SelectedIpaPath,
+            $"{installerName} downloaded and loaded. Connect your Apple Account and sideload when ready.");
+    }
+
     private void DeviceTimer_Tick(
         object? sender,
         EventArgs e)
@@ -187,14 +218,26 @@ private static string RustBackendPath =>
         if (dialog.ShowDialog() != true)
             return;
 
+        LoadIpaFromPath(
+            dialog.FileName,
+            "IPA loaded successfully.");
+    }
+
+    private void LoadIpaFromPath(
+        string ipaPath,
+        string successMessage)
+    {
         selectedIpaPath =
-            dialog.FileName;
+            ipaPath;
 
         try
         {
             var fileInfo =
                 new FileInfo(
                     selectedIpaPath);
+
+            SelectedIpaText.Text =
+                fileInfo.Name;
 
             FileSizeText.Text =
                 FormatFileSize(
@@ -204,12 +247,18 @@ private static string RustBackendPath =>
                 selectedIpaPath);
 
             StatusText.Text =
-                "IPA loaded successfully.";
+                successMessage;
 
             ValidateSigning();
         }
         catch (Exception ex)
         {
+            selectedIpaPath =
+                null;
+
+            SelectedIpaText.Text =
+                "No IPA selected";
+
             AppNameText.Text =
                 "—";
 
