@@ -122,30 +122,13 @@ private static string RustBackendPath =>
             "SideStore");
     }
 
-    private void OpenILoaderButton_Click(
+    private async void QuickInstallLiveContainerButton_Click(
         object sender,
         RoutedEventArgs e)
     {
-        try
-        {
-            Process.Start(
-                new ProcessStartInfo
-                {
-                    FileName =
-                        "https://github.com/nab138/iloader/releases/latest",
-
-                    UseShellExecute =
-                        true
-                });
-        }
-        catch
-        {
-            MessageBox.Show(
-                "AmaazLoader could not open the iLoader download page.",
-                "AmaazLoader",
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
-        }
+        await RunQuickInstallAsync(
+            "livecontainer",
+            "LiveContainer");
     }
 
     private async Task RunQuickInstallAsync(
@@ -159,6 +142,9 @@ private static string RustBackendPath =>
             true;
 
         QuickInstallSideStoreButton.IsEnabled =
+            false;
+
+        QuickInstallLiveContainerButton.IsEnabled =
             false;
 
         QuickInstallProgressBar.Value =
@@ -240,6 +226,8 @@ private static string RustBackendPath =>
             QuickInstallSideStoreButton.IsEnabled =
                 true;
 
+            QuickInstallLiveContainerButton.IsEnabled =
+                true;
         }
     }
 
