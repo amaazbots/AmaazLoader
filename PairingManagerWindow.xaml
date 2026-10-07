@@ -422,6 +422,11 @@
 
             <Grid Margin="26,0">
 
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
                 <TextBlock Text="Keep your device connected and unlocked while pairing is being configured."
                            Foreground="#5F5F67"
                            FontSize="9"
