@@ -727,6 +727,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
 
                     </Grid.RowDefinitions>
 
@@ -861,10 +862,255 @@
 
 
                     <!-- ================================================= -->
+                    <!-- QUICK INSTALL                                      -->
+                    <!-- ================================================= -->
+
+                    <Border Grid.Row="2"
+                            Style="{StaticResource AmaazCard}"
+                            Margin="0,0,0,16"
+                            Padding="22">
+
+                        <Grid>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+
+                            <Grid Grid.Row="0"
+                                  Margin="0,0,0,18">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel>
+
+                                    <TextBlock Text="QUICK INSTALL"
+                                               Style="{StaticResource EyebrowText}"
+                                               Margin="0,0,0,7"/>
+
+                                    <TextBlock Text="Popular apps"
+                                               Foreground="#F5F5F7"
+                                               FontSize="18"
+                                               FontWeight="SemiBold"/>
+
+                                    <TextBlock Text="Pick an app and AmaazLoader will download the latest official IPA for you."
+                                               Foreground="#66666E"
+                                               FontSize="11"
+                                               Margin="0,6,0,0"/>
+
+                                </StackPanel>
+
+
+                                <Button Grid.Column="1"
+                                        Content="Browse All Apps"
+                                        Style="{StaticResource DarkButton}"
+                                        Padding="16,9"
+                                        FontSize="11"
+                                        Click="InstallersButton_Click"
+                                        VerticalAlignment="Center"/>
+
+                            </Grid>
+
+
+                            <Grid Grid.Row="1">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+
+                                <Border Grid.Column="0"
+                                        Background="#111115"
+                                        BorderBrush="#2A2A30"
+                                        BorderThickness="1"
+                                        CornerRadius="15"
+                                        Padding="17">
+
+                                    <Grid>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+
+                                        <Border Width="42"
+                                                Height="42"
+                                                CornerRadius="12"
+                                                Background="#F5F5F7"
+                                                Margin="0,0,14,0">
+
+                                            <TextBlock Text="S"
+                                                       Foreground="#080809"
+                                                       FontSize="16"
+                                                       FontWeight="ExtraBold"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+
+                                        </Border>
+
+
+                                        <StackPanel Grid.Column="1"
+                                                    VerticalAlignment="Center">
+
+                                            <StackPanel Orientation="Horizontal">
+
+                                                <TextBlock Text="SideStore"
+                                                           Foreground="#F5F5F7"
+                                                           FontSize="14"
+                                                           FontWeight="SemiBold"/>
+
+                                                <Border Background="#102016"
+                                                        BorderBrush="#285038"
+                                                        BorderThickness="1"
+                                                        CornerRadius="8"
+                                                        Padding="7,3"
+                                                        Margin="9,0,0,0">
+
+                                                    <TextBlock Text="RECOMMENDED"
+                                                               Foreground="#73F5A4"
+                                                               FontSize="8"
+                                                               FontWeight="Bold"/>
+
+                                                </Border>
+
+                                            </StackPanel>
+
+                                            <TextBlock Text="Alternative app store for iPhone and iPad."
+                                                       Foreground="#66666E"
+                                                       FontSize="10"
+                                                       Margin="0,5,0,0"/>
+
+                                        </StackPanel>
+
+
+                                        <Button x:Name="QuickInstallSideStoreButton"
+                                                Grid.Column="2"
+                                                Content="Install"
+                                                Background="#F5F5F7"
+                                                Foreground="#080809"
+                                                BorderThickness="0"
+                                                Padding="17,9"
+                                                FontSize="11"
+                                                FontWeight="Bold"
+                                                Cursor="Hand"
+                                                Click="QuickInstallSideStoreButton_Click"
+                                                VerticalAlignment="Center"/>
+
+                                    </Grid>
+
+                                </Border>
+
+
+                                <Border Grid.Column="2"
+                                        Background="#111115"
+                                        BorderBrush="#2A2A30"
+                                        BorderThickness="1"
+                                        CornerRadius="15"
+                                        Padding="17">
+
+                                    <Grid>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+
+                                        <Border Width="42"
+                                                Height="42"
+                                                CornerRadius="12"
+                                                Background="#1C1C21"
+                                                Margin="0,0,14,0">
+
+                                            <TextBlock Text="L"
+                                                       Foreground="#F5F5F7"
+                                                       FontSize="16"
+                                                       FontWeight="ExtraBold"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+
+                                        </Border>
+
+
+                                        <StackPanel Grid.Column="1"
+                                                    VerticalAlignment="Center">
+
+                                            <TextBlock Text="LiveContainer"
+                                                       Foreground="#F5F5F7"
+                                                       FontSize="14"
+                                                       FontWeight="SemiBold"/>
+
+                                            <TextBlock Text="Run and manage multiple apps from one container."
+                                                       Foreground="#66666E"
+                                                       FontSize="10"
+                                                       Margin="0,5,0,0"/>
+
+                                        </StackPanel>
+
+
+                                        <Button x:Name="QuickInstallLiveContainerButton"
+                                                Grid.Column="2"
+                                                Content="Install"
+                                                Background="#F5F5F7"
+                                                Foreground="#080809"
+                                                BorderThickness="0"
+                                                Padding="17,9"
+                                                FontSize="11"
+                                                FontWeight="Bold"
+                                                Cursor="Hand"
+                                                Click="QuickInstallLiveContainerButton_Click"
+                                                VerticalAlignment="Center"/>
+
+                                    </Grid>
+
+                                </Border>
+
+                            </Grid>
+
+
+                            <Grid Grid.Row="2"
+                                  Margin="0,16,0,0">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="220"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock x:Name="QuickInstallStatusText"
+                                           Text="Choose an app above to get started."
+                                           Foreground="#5F5F67"
+                                           FontSize="10"
+                                           VerticalAlignment="Center"/>
+
+                                <ProgressBar x:Name="QuickInstallProgressBar"
+                                             Grid.Column="1"
+                                             Style="{StaticResource AmaazProgressBar}"
+                                             Height="6"
+                                             Value="0"
+                                             VerticalAlignment="Center"/>
+
+                            </Grid>
+
+                        </Grid>
+
+                    </Border>
+
+
+                    <!-- ================================================= -->
                     <!-- THREE WORKFLOW CARDS                              -->
                     <!-- ================================================= -->
 
-                    <Grid Grid.Row="2"
+                    <Grid Grid.Row="3"
                           Margin="0,0,0,16">
 
                         <Grid.ColumnDefinitions>
@@ -1027,7 +1273,7 @@
                     <!-- APP INFO + ACCOUNT                                 -->
                     <!-- ================================================= -->
 
-                    <Grid Grid.Row="3"
+                    <Grid Grid.Row="4"
                           Margin="0,0,0,16">
 
                         <Grid.ColumnDefinitions>
@@ -1167,7 +1413,7 @@
                     <!-- ================================================= -->
 
                     <Border x:Name="SideloadProgressCard"
-                            Grid.Row="4"
+                            Grid.Row="5"
                             Style="{StaticResource AmaazCard}"
                             Margin="0,0,0,16"
                             MinHeight="170">
@@ -1362,7 +1608,7 @@
                     <!-- ADVANCED + FINAL ACTION                            -->
                     <!-- ================================================= -->
 
-                    <Grid Grid.Row="5">
+                    <Grid Grid.Row="6">
 
                         <Grid.ColumnDefinitions>
 
