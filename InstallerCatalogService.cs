@@ -306,12 +306,12 @@ public sealed class InstallerCatalogService
             {
                 Id = "livecontainer",
                 Name = "LiveContainer",
-                Description = "Run and manage multiple apps from a single sideloaded container.",
+                Description = "Install LiveContainer with SideStore support for app refreshing and container workflows.",
                 Category = "Utilities",
                 Repository = "LiveContainer/LiveContainer",
-                AssetName = "LiveContainer.ipa",
+                AssetName = "LiveContainer+SideStore.ipa",
                 Website = "https://livecontainer.github.io/",
-                Notes = "Standalone official LiveContainer release.",
+                Notes = "Official LiveContainer + SideStore release with automatic pairing support.",
                 Featured = true
             }
         };
