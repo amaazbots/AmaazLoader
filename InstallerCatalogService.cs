@@ -44,6 +44,62 @@ public sealed class InstallerCatalogService
         return CreateFallbackCatalog();
     }
 
+    public Task<InstallerResolvedDownload> ResolveChannelReleaseAsync(
+        InstallerCatalogItem app,
+        string channel,
+        CancellationToken cancellationToken = default)
+    {
+        if (!channel.Equals(
+            "nightly",
+            StringComparison.OrdinalIgnoreCase))
+        {
+            return ResolveLatestReleaseAsync(
+                app,
+                cancellationToken);
+        }
+
+        string downloadUrl;
+        string fileName;
+
+        if (app.Id.Equals(
+            "sidestore",
+            StringComparison.OrdinalIgnoreCase))
+        {
+            downloadUrl =
+                "https://github.com/SideStore/SideStore/releases/download/nightly/SideStore.ipa";
+
+            fileName =
+                "SideStore-Nightly.ipa";
+        }
+        else if (app.Id.Equals(
+            "livecontainer",
+            StringComparison.OrdinalIgnoreCase))
+        {
+            downloadUrl =
+                "https://github.com/LiveContainer/LiveContainer/releases/download/nightly/LiveContainer+SideStore.ipa";
+
+            fileName =
+                "LiveContainerSideStore-Nightly.ipa";
+        }
+        else
+        {
+            return ResolveLatestReleaseAsync(
+                app,
+                cancellationToken);
+        }
+
+        return Task.FromResult(
+            new InstallerResolvedDownload
+            {
+                App = app,
+                Version = "Nightly",
+                FileName = fileName,
+                DownloadUrl = downloadUrl,
+                Sha256 = null,
+                SizeBytes = 0
+            });
+    }
+
     public async Task<InstallerResolvedDownload> ResolveLatestReleaseAsync(
         InstallerCatalogItem app,
         CancellationToken cancellationToken = default)
@@ -164,6 +220,43 @@ public sealed class InstallerCatalogService
             Path.Combine(
                 downloadDirectory,
                 Path.GetFileName(release.FileName));
+
+        if (File.Exists(
+            destinationPath))
+        {
+            bool cacheValid =
+                false;
+
+            if (!string.IsNullOrWhiteSpace(
+                release.Sha256))
+            {
+                string cachedHash =
+                    await ComputeSha256Async(
+                        destinationPath,
+                        cancellationToken);
+
+                cacheValid =
+                    cachedHash.Equals(
+                        release.Sha256,
+                        StringComparison.OrdinalIgnoreCase);
+            }
+            else if (release.SizeBytes > 0)
+            {
+                cacheValid =
+                    new FileInfo(
+                        destinationPath)
+                        .Length ==
+                    release.SizeBytes;
+            }
+
+            if (cacheValid)
+            {
+                progress?.Report(
+                    100);
+
+                return destinationPath;
+            }
+        }
 
         using HttpResponseMessage response =
             await HttpClient.GetAsync(
