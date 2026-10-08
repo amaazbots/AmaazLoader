@@ -107,6 +107,32 @@ public partial class MainWindow : Window
         CheckDevice();
     }
 
+    private void SponsoredLinkButton_Click(
+        object sender,
+        RoutedEventArgs e)
+    {
+        const string sponsorUrl =
+            "https://buzzonclick.com/jump/next.php?r=12275994";
+
+        // The external link is optional and only opens from this click handler.
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = sponsorUrl,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"Could not open the sponsored link: {ex.Message}",
+                "AmaazLoader",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+    }
+
     private void SettingsButton_Click(
         object sender,
         RoutedEventArgs e)
