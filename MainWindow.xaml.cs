@@ -9,6 +9,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using Microsoft.Web.WebView2.Core;
 using Ellipse = System.Windows.Shapes.Ellipse;
 using Claunia.PropertyList;
 
@@ -105,6 +106,69 @@ public partial class MainWindow : Window
         deviceTimer.Start();
 
         CheckDevice();
+    }
+
+    private bool displayAdStarted;
+
+    private async void DisplayAdWebView_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (displayAdStarted)
+            return;
+
+        displayAdStarted = true;
+
+        try
+        {
+            await DisplayAdWebView.EnsureCoreWebView2Async();
+            DisplayAdWebView.CoreWebView2.Settings.AreDevToolsEnabled = false;
+            DisplayAdWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            DisplayAdWebView.CoreWebView2.NewWindowRequested += (_, args) =>
+            {
+                args.Handled = true;
+                OpenExternalAdLink(args.Uri);
+            };
+            DisplayAdWebView.CoreWebView2.NavigationStarting += (_, args) =>
+            {
+                if (args.Uri.StartsWith("about:blank", StringComparison.OrdinalIgnoreCase))
+                    return;
+
+                // Keep all advert click-throughs out of the app itself.
+                args.Cancel = true;
+                OpenExternalAdLink(args.Uri);
+            };
+
+            DisplayAdWebView.NavigateToString(@"<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'>
+<style>html,body{width:728px;height:90px;margin:0;padding:0;overflow:hidden;background:#0b0b0e}</style>
+<script id='aclib' type='text/javascript' src='https://acscdn.com/script/aclib.js'></script></head><body>
+<div><script type='text/javascript'>aclib.runBanner({zoneId:'12288218'});</script></div></body></html>");
+            DisplayAdFallback.Visibility = Visibility.Collapsed;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Ad display unavailable: {ex.Message}");
+            DisplayAdWebView.Visibility = Visibility.Collapsed;
+            DisplayAdFallback.Text = "Sponsored content unavailable";
+        }
+    }
+
+    private static void OpenExternalAdLink(string? url)
+    {
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) ||
+            uri.Scheme != Uri.UriSchemeHttps)
+            return;
+
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = uri.AbsoluteUri,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Could not open ad destination: {ex.Message}");
+        }
     }
 
     private void SponsoredLinkButton_Click(
