@@ -1300,15 +1300,12 @@ private static string RustBackendPath =>
                 if (!string.IsNullOrWhiteSpace(
                     pendingPairingTarget))
                 {
-                    SideloadStageText.Text =
+                    UpdateSideloadProgress(
+                        97,
+                        "Pairing",
                         pendingPairingTarget == "sidestore"
-                            ? "Importing SideStore pairing"
-                            : "Configuring pairing";
-
-                    SideloadProgressDetailsText.Text =
-                        pendingPairingTarget == "sidestore"
-                            ? "AmaazLoader is placing and verifying the pairing file inside SideStore automatically."
-                            : "AmaazLoader is placing and verifying the pairing file inside the installed apps automatically.";
+                            ? "Importing and verifying the pairing file inside SideStore automatically."
+                            : "Configuring and verifying pairing inside the installed apps automatically.");
 
                     StatusText.Text =
                         pendingPairingTarget == "sidestore"
@@ -1322,11 +1319,10 @@ private static string RustBackendPath =>
 
                     if (!pairingResult.Success)
                     {
-                        SideloadStageText.Text =
-                            "Repairing pairing";
-
-                        SideloadProgressDetailsText.Text =
-                            "The first pairing attempt did not validate. AmaazLoader is rebuilding pairing automatically.";
+                        UpdateSideloadProgress(
+                            98,
+                            "Pairing",
+                            "The first pairing attempt did not validate. AmaazLoader is rebuilding pairing automatically.");
 
                         pairingResult =
                             pendingPairingTarget == "sidestore"
@@ -2030,9 +2026,9 @@ private static string RustBackendPath =>
                 case "SIDELOAD_SUCCESS":
 
                     UpdateSideloadProgress(
-                        100,
-                        "Complete",
-                        "The application was successfully signed and installed.");
+                        94,
+                        "Installing",
+                        "The application is installed. AmaazLoader is finishing setup.");
 
                     SigningStatusText.Text =
                         "Installation Complete";
@@ -2321,6 +2317,11 @@ private static string RustBackendPath =>
             ProgressInstallingDot,
             false,
             false);
+
+        SetProgressDot(
+            ProgressPairingDot,
+            false,
+            false);
     }
 
     private void ResetSideloadProgress()
@@ -2369,6 +2370,11 @@ private static string RustBackendPath =>
 
         SetProgressDot(
             ProgressInstallingDot,
+            false,
+            false);
+
+        SetProgressDot(
+            ProgressPairingDot,
             false,
             false);
     }
@@ -2571,6 +2577,17 @@ private static string RustBackendPath =>
                 "Installing",
                 StringComparison.OrdinalIgnoreCase);
 
+        bool pairingActive =
+            stage.Equals(
+                "Pairing",
+                StringComparison.OrdinalIgnoreCase);
+
+        bool pairingComplete =
+            stage.Equals(
+                "Complete",
+                StringComparison.OrdinalIgnoreCase) ||
+            progress >= 100;
+
         bool complete =
             stage.Equals(
                 "Complete",
@@ -2608,6 +2625,13 @@ private static string RustBackendPath =>
             complete,
             installingActive &&
             !installingComplete);
+
+        SetProgressDot(
+            ProgressPairingDot,
+            pairingActive ||
+            pairingComplete,
+            pairingActive &&
+            !pairingComplete);
     }
 
     private void SetProgressDot(
@@ -2637,13 +2661,10 @@ private static string RustBackendPath =>
             return;
         }
 
-        bool isGold =
-            pulsing;
-
         dot.Fill =
             new SolidColorBrush(
-                isGold
-                    ? Colors.Gold
+                pulsing
+                    ? Colors.White
                     : Colors.LightGreen);
 
         dot.Opacity =
@@ -2655,7 +2676,7 @@ private static string RustBackendPath =>
                 new System.Windows.Media.Effects.DropShadowEffect
                 {
                     Color =
-                        Colors.Gold,
+                        Colors.White,
 
                     BlurRadius =
                         14,
@@ -2788,6 +2809,11 @@ private static string RustBackendPath =>
             ProgressInstallingDot,
             true,
             false);
+
+        SetProgressDot(
+            ProgressPairingDot,
+            true,
+            false);
     }
 
     private void FailSideloadProgress()
@@ -2855,6 +2881,11 @@ private static string RustBackendPath =>
             ProgressInstallingDot,
             false,
             false);
+
+        SetProgressDot(
+            ProgressPairingDot,
+            false,
+            false);
     }
 
     private void StopProgressAnimations()
@@ -2886,6 +2917,9 @@ private static string RustBackendPath =>
 
         StopDotAnimation(
             ProgressInstallingDot);
+
+        StopDotAnimation(
+            ProgressPairingDot);
     }
 
     private static void StopDotAnimation(
