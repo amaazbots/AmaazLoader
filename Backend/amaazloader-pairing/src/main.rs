@@ -1,5 +1,7 @@
 use std::{
+    fs,
     io::Cursor,
+    path::PathBuf,
     time::Duration,
 };
 
@@ -43,6 +45,183 @@ const LIVECONTAINER_NAME: &str =
     "LiveContainer";
 const LIVECONTAINER_PATH: &str =
     "SideStore/Documents/ALTPairingFile.mobiledevicepairing";
+
+fn pairing_cache_directory(
+    udid: &str,
+) -> Result<PathBuf> {
+    let base =
+        std::env::var(
+            "APPDATA")
+            .map(
+                PathBuf::from)
+            .unwrap_or_else(
+                |_| {
+                    std::env::temp_dir()
+                });
+
+    let path =
+        base
+            .join(
+                "AmaazLoader")
+            .join(
+                "Pairing")
+            .join(
+                udid);
+
+    fs::create_dir_all(
+        &path)
+        .context(
+            "Could not create AmaazLoader pairing cache directory.")?;
+
+    Ok(
+        path)
+}
+
+fn load_or_create_host_label(
+    udid: &str,
+) -> Result<String> {
+    let directory =
+        pairing_cache_directory(
+            udid)?;
+
+    let path =
+        directory.join(
+            "host_label.txt");
+
+    if let Ok(
+        existing) =
+        fs::read_to_string(
+            &path)
+    {
+        let value =
+            existing.trim();
+
+        if !value.is_empty()
+        {
+            return Ok(
+                value.to_string());
+        }
+    }
+
+    let host_id =
+        Uuid::new_v4()
+            .simple()
+            .to_string();
+
+    let hostname =
+        format!(
+            "amaazloader-{}",
+            &host_id[..6]);
+
+    fs::write(
+        &path,
+        hostname.as_bytes())
+        .context(
+            "Could not store the persistent AmaazLoader pairing hostname.")?;
+
+    Ok(
+        hostname)
+}
+
+fn load_cached_remote_pairing(
+    udid: &str,
+) -> Result<Option<(
+    plist::Value,
+    Vec<u8>,
+)>> {
+    let path =
+        pairing_cache_directory(
+            udid)?
+            .join(
+                "rppairing.plist");
+
+    let bytes =
+        match fs::read(
+            &path)
+        {
+            Ok(
+                bytes) =>
+            {
+                bytes
+            }
+
+            Err(_) =>
+            {
+                return Ok(
+                    None);
+            }
+        };
+
+    let plist =
+        match plist::Value::from_reader_xml(
+            Cursor::new(
+                &bytes))
+        {
+            Ok(
+                value) =>
+            {
+                value
+            }
+
+            Err(_) =>
+            {
+                let _ =
+                    fs::remove_file(
+                        &path);
+
+                return Ok(
+                    None);
+            }
+        };
+
+    Ok(
+        Some((
+            plist,
+            bytes,
+        )))
+}
+
+fn store_remote_pairing(
+    udid: &str,
+    bytes: &[u8],
+) -> Result<()> {
+    let path =
+        pairing_cache_directory(
+            udid)?
+            .join(
+                "rppairing.plist");
+
+    fs::write(
+        path,
+        bytes)
+        .context(
+            "Could not cache the remote pairing data.")?;
+
+    Ok(())
+}
+
+fn clear_pairing_cache(
+    udid: &str,
+) -> Result<()> {
+    let directory =
+        pairing_cache_directory(
+            udid)?;
+
+    if directory.exists()
+    {
+        fs::remove_dir_all(
+            &directory)
+            .context(
+                "Could not clear the cached pairing data.")?;
+    }
+
+    fs::create_dir_all(
+        &directory)
+        .context(
+            "Could not recreate the AmaazLoader pairing cache directory.")?;
+
+    Ok(())
+}
 
 #[derive(Clone, Debug)]
 struct DeviceInfo {
@@ -195,6 +374,14 @@ async fn run() -> Result<()> {
 
             println!(
                 "AMAAZ_PAIRING_EVENT:LIVECONTAINER_COMPLETE");
+        }
+
+        "reset" => {
+            clear_pairing_cache(
+                &device.udid)?;
+
+            println!(
+                "AMAAZ_PAIRING_EVENT:CACHE_RESET");
         }
 
         "export" => {
@@ -394,6 +581,14 @@ async fn generate_pairing_file(
         println!(
             "AMAAZ_PAIRING_EVENT:PAIRING_READY");
 
+        let mut dictionary =
+            dictionary;
+
+        dictionary.insert(
+            "UDID".to_string(),
+            plist::Value::String(
+                device.udid.clone()));
+
         return Ok(
             plist_to_xml_bytes(
                 &dictionary));
@@ -402,61 +597,98 @@ async fn generate_pairing_file(
     println!(
         "AMAAZ_PAIRING_EVENT:REMOTE_PAIRING");
 
-    let host_id =
-        Uuid::new_v4()
-            .simple()
-            .to_string();
+    let (
+        remote_pairing_plist,
+        remote_pairing_bytes,
+    ) =
+        match load_cached_remote_pairing(
+            &device.udid)?
+        {
+            Some(
+                cached) =>
+            {
+                println!(
+                    "AMAAZ_PAIRING_EVENT:REMOTE_PAIRING_CACHED");
 
-    let hostname =
-        format!(
-            "amaazloader-{}",
-            &host_id[..6]);
+                cached
+            }
 
-    let service =
-        RemotePairingLockdownService::connect(
-            provider)
-            .await
-            .context(
-                "Could not connect to the remote pairing service.")?;
+            None =>
+            {
+                let hostname =
+                    load_or_create_host_label(
+                        &device.udid)?;
 
-    let mut client =
-        service
-            .into_client(
-                &hostname)
-            .context(
-                "The remote pairing service did not provide a socket.")?;
+                let service =
+                    RemotePairingLockdownService::connect(
+                        provider)
+                        .await
+                        .context(
+                            "Could not connect to the remote pairing service.")?;
 
-    let mut remote_pairing =
-        RpPairingFile::generate(
-            &hostname);
+                let mut client =
+                    service
+                        .into_client(
+                            &hostname)
+                        .context(
+                            "The remote pairing service did not provide a socket.")?;
 
-    client
-        .connect(
-            &mut remote_pairing,
-            async || {
-                "000000".to_string()
-            })
-        .await
-        .context(
-            "Could not complete remote pairing.")?;
+                let mut remote_pairing =
+                    RpPairingFile::generate(
+                        &hostname);
 
-    let remote_pairing_bytes =
-        remote_pairing
-            .to_bytes();
+                client
+                    .connect(
+                        &mut remote_pairing,
+                        async || {
+                            "000000".to_string()
+                        })
+                    .await
+                    .context(
+                        "Could not complete remote pairing.")?;
 
-    let remote_pairing_plist =
-        plist::Value::from_reader_xml(
-            Cursor::new(
-                remote_pairing_bytes))
-            .context(
-                "Could not parse the remote pairing data.")?;
+                let bytes =
+                    remote_pairing
+                        .to_bytes();
 
-    let combined =
+                let plist =
+                    plist::Value::from_reader_xml(
+                        Cursor::new(
+                            &bytes))
+                        .context(
+                            "Could not parse the remote pairing data.")?;
+
+                store_remote_pairing(
+                    &device.udid,
+                    &bytes)?;
+
+                (
+                    plist,
+                    bytes,
+                )
+            }
+        };
+
+    let mut combined =
         plist!(
             dict {
                 :< lockdown_plist,
                 :< remote_pairing_plist,
             });
+
+    if let Some(
+        dictionary) =
+        combined.as_dictionary_mut()
+    {
+        dictionary.insert(
+            "UDID".to_string(),
+            plist::Value::String(
+                device.udid.clone()));
+    }
+
+    println!(
+        "AMAAZ_PAIRING_EVENT:REMOTE_PAIRING_SIZE:{}",
+        remote_pairing_bytes.len());
 
     println!(
         "AMAAZ_PAIRING_EVENT:PAIRING_READY");
