@@ -1,5 +1,5 @@
 #define MyAppName "AmaazLoader"
-#define MyAppVersion "1.1.0"
+#define MyAppVersion "1.2.0"
 #define MyAppPublisher "Amaazbots"
 #define MyAppExeName "AmaazLoader.exe"
 
@@ -35,7 +35,7 @@ DisableProgramGroupPage=yes
 CloseApplications=yes
 RestartApplications=no
 
-VersionInfoVersion=1.1.0.0
+VersionInfoVersion=1.2.0.0
 VersionInfoCompany={#MyAppPublisher}
 VersionInfoDescription=AmaazLoader Installer
 VersionInfoProductName={#MyAppName}
