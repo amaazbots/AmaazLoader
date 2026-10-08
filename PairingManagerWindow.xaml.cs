@@ -25,6 +25,16 @@ public partial class PairingManagerWindow : Window
         await RefreshAppsAsync();
     }
 
+    private async void RebuildPairingButton_Click(
+        object sender,
+        RoutedEventArgs e)
+    {
+        await RunPlacementAsync(
+            "Rebuilding SideStore pairing...",
+            () =>
+                pairingManager.RebuildSideStoreAsync());
+    }
+
     private async void RescanButton_Click(
         object sender,
         RoutedEventArgs e)
@@ -262,6 +272,9 @@ public partial class PairingManagerWindow : Window
             !busy;
 
         ExportPairingButton.IsEnabled =
+            !busy;
+
+        RebuildPairingButton.IsEnabled =
             !busy;
     }
 
