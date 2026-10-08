@@ -551,7 +551,7 @@ async fn wait_for_apps(
     target:
         Option<&str>,
 ) -> Result<Vec<PairingApp>> {
-    for attempt in 0..8 {
+    for attempt in 0..30 {
         let mut apps =
             scan_supported_apps(
                 provider)
@@ -577,11 +577,15 @@ async fn wait_for_apps(
                 apps);
         }
 
-        if attempt < 7
+        if attempt < 29
         {
+            println!(
+                "AMAAZ_PAIRING_EVENT:WAITING_FOR_APP:{}",
+                attempt + 1);
+
             sleep(
-                Duration::from_millis(
-                    750))
+                Duration::from_secs(
+                    1))
                 .await;
         }
     }
@@ -728,6 +732,24 @@ async fn place_file(
         .await
         .context(
             "Could not close the pairing file.")?;
+
+    let file_info =
+        afc.get_file_info(
+            remote_path.clone())
+            .await
+            .context(
+                "The pairing file was written, but AmaazLoader could not verify it in the app container.")?;
+
+    if file_info.size == 0
+    {
+        bail!(
+            "The pairing file was created in the app container but it is empty.");
+    }
+
+    println!(
+        "AMAAZ_PAIRING_EVENT:VERIFIED:{}:{}",
+        remote_path,
+        file_info.size);
 
     Ok(())
 }
