@@ -133,6 +133,34 @@ private static string RustBackendPath =>
         pairingWindow.ShowDialog();
     }
 
+    private void QuickInstallChannel_Checked(
+        object sender,
+        RoutedEventArgs e)
+    {
+        if (!IsLoaded)
+            return;
+
+        string channel =
+            QuickInstallNightlyRadio.IsChecked == true
+                ? "Nightly"
+                : "Stable";
+
+        QuickInstallSideStoreButton.Content =
+            channel == "Nightly"
+                ? "Install Nightly"
+                : "Install Stable";
+
+        QuickInstallLiveContainerButton.Content =
+            channel == "Nightly"
+                ? "Install Nightly"
+                : "Install Stable";
+
+        QuickInstallStatusText.Text =
+            channel == "Nightly"
+                ? "Nightly selected • newest development builds."
+                : "Stable selected • recommended for most users.";
+    }
+
     private async void QuickFixPairingButton_Click(
         object sender,
         RoutedEventArgs e)
@@ -266,6 +294,12 @@ private static string RustBackendPath =>
         QuickInstallLiveContainerButton.IsEnabled =
             false;
 
+        QuickInstallStableRadio.IsEnabled =
+            false;
+
+        QuickInstallNightlyRadio.IsEnabled =
+            false;
+
         QuickInstallProgressBar.Value =
             0;
 
@@ -291,9 +325,8 @@ private static string RustBackendPath =>
             }
 
             string channel =
-                QuickInstallChannelComboBox.SelectedItem is ComboBoxItem selectedChannel &&
-                selectedChannel.Content is string channelName
-                    ? channelName
+                QuickInstallNightlyRadio.IsChecked == true
+                    ? "Nightly"
                     : "Stable";
 
             InstallerResolvedDownload release =
@@ -379,6 +412,15 @@ private static string RustBackendPath =>
                 true;
 
             QuickInstallLiveContainerButton.IsEnabled =
+                true;
+
+            QuickInstallStableRadio.IsEnabled =
+                true;
+
+            QuickInstallNightlyRadio.IsEnabled =
+                true;
+
+            QuickFixPairingButton.IsEnabled =
                 true;
         }
     }
