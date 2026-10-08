@@ -541,11 +541,29 @@
                                                Margin="0,6,0,0"/>
                                 </StackPanel>
 
-                                <Button Grid.Column="1"
-                                        Content="Browse All"
-                                        Style="{StaticResource SecondaryButton}"
-                                        Click="InstallersButton_Click"
-                                        VerticalAlignment="Center"/>
+                                <StackPanel Grid.Column="1"
+                                            Orientation="Horizontal"
+                                            VerticalAlignment="Center">
+
+                                    <ComboBox x:Name="QuickInstallChannelComboBox"
+                                              Width="118"
+                                              Height="38"
+                                              SelectedIndex="0"
+                                              Background="#18181D"
+                                              Foreground="#F5F5F7"
+                                              BorderBrush="#303036"
+                                              BorderThickness="1"
+                                              Padding="10,0"
+                                              Margin="0,0,9,0">
+                                        <ComboBoxItem Content="Stable"/>
+                                        <ComboBoxItem Content="Nightly"/>
+                                    </ComboBox>
+
+                                    <Button Content="Browse All"
+                                            Style="{StaticResource SecondaryButton}"
+                                            Click="InstallersButton_Click"/>
+
+                                </StackPanel>
 
                             </Grid>
 
@@ -608,6 +626,12 @@
                                                        FontSize="10"
                                                        Margin="0,5,0,0"/>
 
+                                            <TextBlock x:Name="SideStoreInstalledBadge"
+                                                       Text="Device status: checking..."
+                                                       Foreground="#5F5F67"
+                                                       FontSize="9"
+                                                       Margin="0,5,0,0"/>
+
                                         </StackPanel>
 
                                         <Button x:Name="QuickInstallSideStoreButton"
@@ -656,6 +680,12 @@
                                             <TextBlock Text="LiveContainer + SideStore with automatic pairing."
                                                        Foreground="#6B6B73"
                                                        FontSize="10"
+                                                       Margin="0,5,0,0"/>
+
+                                            <TextBlock x:Name="LiveContainerInstalledBadge"
+                                                       Text="Device status: checking..."
+                                                       Foreground="#5F5F67"
+                                                       FontSize="9"
                                                        Margin="0,5,0,0"/>
                                         </StackPanel>
 
