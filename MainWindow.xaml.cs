@@ -133,6 +133,105 @@ private static string RustBackendPath =>
         pairingWindow.ShowDialog();
     }
 
+    private async void QuickFixPairingButton_Click(
+        object sender,
+        RoutedEventArgs e)
+    {
+        if (quickInstallInProgress)
+            return;
+
+        if (deviceManager.GetConnectedDevice() == null)
+        {
+            QuickInstallStatusText.Text =
+                "Connect and unlock your iPhone first.";
+
+            return;
+        }
+
+        quickInstallInProgress =
+            true;
+
+        QuickFixPairingButton.IsEnabled =
+            false;
+
+        QuickInstallSideStoreButton.IsEnabled =
+            false;
+
+        QuickInstallLiveContainerButton.IsEnabled =
+            false;
+
+        QuickFixPairingButton.IsEnabled =
+            false;
+
+        QuickInstallProgressBar.Value =
+            25;
+
+        QuickInstallStatusText.Text =
+            "Rebuilding pairing...";
+
+        try
+        {
+            PairingOperationResult result =
+                await pairingManager.RebuildAllAsync();
+
+            if (!result.Success)
+            {
+                QuickInstallProgressBar.Value =
+                    0;
+
+                QuickInstallStatusText.Text =
+                    "Pairing repair failed.";
+
+                MessageBox.Show(
+                    result.Error,
+                    "AmaazLoader Pairing",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
+            QuickInstallProgressBar.Value =
+                100;
+
+            QuickInstallStatusText.Text =
+                "Pairing repaired successfully ✓";
+
+            await RefreshQuickInstallInstalledStateAsync();
+        }
+        catch (Exception ex)
+        {
+            QuickInstallProgressBar.Value =
+                0;
+
+            QuickInstallStatusText.Text =
+                "Pairing repair failed.";
+
+            MessageBox.Show(
+                ex.Message,
+                "AmaazLoader Pairing",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+        finally
+        {
+            quickInstallInProgress =
+                false;
+
+            QuickFixPairingButton.IsEnabled =
+                true;
+
+            QuickInstallSideStoreButton.IsEnabled =
+                true;
+
+            QuickInstallLiveContainerButton.IsEnabled =
+                true;
+
+            QuickFixPairingButton.IsEnabled =
+                true;
+        }
+    }
+
     private async void QuickInstallSideStoreButton_Click(
         object sender,
         RoutedEventArgs e)
@@ -1228,6 +1327,16 @@ private static string RustBackendPath =>
                     pairingConfigured
                         ? "Sideload and pairing setup completed successfully."
                         : "Sideload completed successfully.";
+
+                SideloadSuccessText.Text =
+                    pairingConfigured
+                        ? $"{AppNameText.Text} installed + paired ✓"
+                        : $"{AppNameText.Text} installed ✓";
+
+                QuickInstallStatusText.Text =
+                    pairingConfigured
+                        ? $"{AppNameText.Text} installed and paired ✓"
+                        : $"{AppNameText.Text} installed ✓";
 
                 SetSigningStatus(
                     true);
