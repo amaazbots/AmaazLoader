@@ -369,12 +369,22 @@
                                        Margin="0,5,15,0"/>
                         </StackPanel>
 
-                        <Button x:Name="RescanButton"
-                                Grid.Column="2"
-                                Content="Rescan"
-                                Style="{StaticResource SecondaryButton}"
-                                Click="RescanButton_Click"
-                                VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="2"
+                                    Orientation="Horizontal"
+                                    VerticalAlignment="Center">
+
+                            <Button x:Name="RebuildPairingButton"
+                                    Content="Rebuild Pairing"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Click="RebuildPairingButton_Click"
+                                    Margin="0,0,8,0"/>
+
+                            <Button x:Name="RescanButton"
+                                    Content="Rescan"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Click="RescanButton_Click"/>
+
+                        </StackPanel>
 
                     </Grid>
 
