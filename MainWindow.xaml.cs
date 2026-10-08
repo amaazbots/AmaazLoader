@@ -49,6 +49,9 @@ public partial class MainWindow : Window
     private bool quickInstallInProgress;
 
     private string? pendingPairingTarget;
+    private string? lastQuickInstallDeviceUdid;
+
+    private bool quickInstallStatusRefreshInProgress;
 
     private int currentAnimatedProgress;
 
@@ -188,9 +191,19 @@ private static string RustBackendPath =>
                     $"{fallbackName} is not available in the installer catalog.");
             }
 
+            string channel =
+                QuickInstallChannelComboBox.SelectedItem is ComboBoxItem selectedChannel &&
+                selectedChannel.Content is string channelName
+                    ? channelName
+                    : "Stable";
+
             InstallerResolvedDownload release =
-                await installerCatalogService.ResolveLatestReleaseAsync(
-                    app);
+                await installerCatalogService.ResolveChannelReleaseAsync(
+                    app,
+                    channel);
+
+            QuickInstallStatusText.Text =
+                $"{app.Name} • {channel} • preparing download...";
 
             QuickInstallStatusText.Text =
                 $"Downloading {app.Name} {release.Version}...";
@@ -227,6 +240,22 @@ private static string RustBackendPath =>
 
             QuickInstallStatusText.Text =
                 $"{app.Name} is ready to sideload ✓";
+
+            bool canStartImmediately =
+                currentAppleAccount?.IsConnected == true &&
+                !string.IsNullOrWhiteSpace(
+                    connectedAppleEmail) &&
+                deviceManager.GetConnectedDevice() != null;
+
+            if (canStartImmediately)
+            {
+                QuickInstallStatusText.Text =
+                    $"{app.Name} ready • starting one-click install...";
+
+                SideloadButton.RaiseEvent(
+                    new RoutedEventArgs(
+                        Button.ClickEvent));
+            }
         }
         catch (Exception ex)
         {
@@ -330,6 +359,18 @@ private static string RustBackendPath =>
             DeviceStatusDot.Fill =
                 new SolidColorBrush(
                     Colors.LightGreen);
+
+            if (!string.Equals(
+                lastQuickInstallDeviceUdid,
+                device.Udid,
+                StringComparison.OrdinalIgnoreCase))
+            {
+                lastQuickInstallDeviceUdid =
+                    device.Udid;
+
+                _ =
+                    RefreshQuickInstallInstalledStateAsync();
+            }
         }
         else
         {
@@ -349,9 +390,101 @@ private static string RustBackendPath =>
             DeviceStatusDot.Fill =
                 new SolidColorBrush(
                     Colors.Gray);
+
+            lastQuickInstallDeviceUdid =
+                null;
+
+            SideStoreInstalledBadge.Text =
+                "Device status: connect iPhone";
+
+            SideStoreInstalledBadge.Foreground =
+                new SolidColorBrush(
+                    Colors.Gray);
+
+            LiveContainerInstalledBadge.Text =
+                "Device status: connect iPhone";
+
+            LiveContainerInstalledBadge.Foreground =
+                new SolidColorBrush(
+                    Colors.Gray);
         }
 
         ValidateSigning();
+    }
+
+    private async Task RefreshQuickInstallInstalledStateAsync()
+    {
+        if (quickInstallStatusRefreshInProgress)
+            return;
+
+        quickInstallStatusRefreshInProgress =
+            true;
+
+        try
+        {
+            PairingOperationResult result =
+                await pairingManager.ScanAsync();
+
+            if (!result.Success)
+            {
+                SideStoreInstalledBadge.Text =
+                    "Device status: unavailable";
+
+                LiveContainerInstalledBadge.Text =
+                    "Device status: unavailable";
+
+                return;
+            }
+
+            bool sideStoreInstalled =
+                result.Apps.Any(
+                    app =>
+                        app.Name.Equals(
+                            "SideStore",
+                            StringComparison.OrdinalIgnoreCase));
+
+            bool liveContainerInstalled =
+                result.Apps.Any(
+                    app =>
+                        app.Name.Equals(
+                            "LiveContainer",
+                            StringComparison.OrdinalIgnoreCase));
+
+            SideStoreInstalledBadge.Text =
+                sideStoreInstalled
+                    ? "Installed on device ✓"
+                    : "Not installed";
+
+            SideStoreInstalledBadge.Foreground =
+                new SolidColorBrush(
+                    sideStoreInstalled
+                        ? Colors.LightGreen
+                        : Colors.Gray);
+
+            LiveContainerInstalledBadge.Text =
+                liveContainerInstalled
+                    ? "Installed on device ✓"
+                    : "Not installed";
+
+            LiveContainerInstalledBadge.Foreground =
+                new SolidColorBrush(
+                    liveContainerInstalled
+                        ? Colors.LightGreen
+                        : Colors.Gray);
+        }
+        catch
+        {
+            SideStoreInstalledBadge.Text =
+                "Device status: unavailable";
+
+            LiveContainerInstalledBadge.Text =
+                "Device status: unavailable";
+        }
+        finally
+        {
+            quickInstallStatusRefreshInProgress =
+                false;
+        }
     }
 
     private void MainWindow_DragOver(
@@ -1046,6 +1179,20 @@ private static string RustBackendPath =>
                             ? await pairingManager.PlaceSideStoreAsync()
                             : await pairingManager.PlaceAllAsync();
 
+                    if (!pairingResult.Success)
+                    {
+                        SideloadStageText.Text =
+                            "Repairing pairing";
+
+                        SideloadProgressDetailsText.Text =
+                            "The first pairing attempt did not validate. AmaazLoader is rebuilding pairing automatically.";
+
+                        pairingResult =
+                            pendingPairingTarget == "sidestore"
+                                ? await pairingManager.RebuildSideStoreAsync()
+                                : await pairingManager.RebuildAllAsync();
+                    }
+
                     pairingConfigured =
                         pairingResult.Success;
 
@@ -1084,6 +1231,9 @@ private static string RustBackendPath =>
 
                 SetSigningStatus(
                     true);
+
+                _ =
+                    RefreshQuickInstallInstalledStateAsync();
 
                 MessageBox.Show(
                     $"The IPA was signed and installed successfully.\n\n" +
