@@ -67,7 +67,7 @@ public partial class MainWindow : Window
 
         AppVersionText.Text =
             appVersion == null
-                ? "v1.2.0"
+                ? "v1.2.1"
                 : $"v{appVersion.Major}.{appVersion.Minor}.{appVersion.Build}";
 
         deviceManager = new DeviceManager();
