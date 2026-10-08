@@ -50,6 +50,34 @@ public sealed class PairingManager
             "place-livecontainer");
     }
 
+    public Task<PairingOperationResult> ResetAsync()
+    {
+        return RunAsync(
+            "reset");
+    }
+
+    public async Task<PairingOperationResult> RebuildSideStoreAsync()
+    {
+        PairingOperationResult reset =
+            await ResetAsync();
+
+        if (!reset.Success)
+            return reset;
+
+        return await PlaceSideStoreAsync();
+    }
+
+    public async Task<PairingOperationResult> RebuildAllAsync()
+    {
+        PairingOperationResult reset =
+            await ResetAsync();
+
+        if (!reset.Success)
+            return reset;
+
+        return await PlaceAllAsync();
+    }
+
     public Task<PairingOperationResult> ExportAsync(
         string destinationPath)
     {
