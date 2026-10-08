@@ -1027,13 +1027,19 @@ private static string RustBackendPath =>
                     pendingPairingTarget))
                 {
                     SideloadStageText.Text =
-                        "Configuring pairing";
+                        pendingPairingTarget == "sidestore"
+                            ? "Importing SideStore pairing"
+                            : "Configuring pairing";
 
                     SideloadProgressDetailsText.Text =
-                        "Placing the device pairing file inside the installed app.";
+                        pendingPairingTarget == "sidestore"
+                            ? "AmaazLoader is placing and verifying the pairing file inside SideStore automatically."
+                            : "AmaazLoader is placing and verifying the pairing file inside the installed apps automatically.";
 
                     StatusText.Text =
-                        "Configuring pairing file...";
+                        pendingPairingTarget == "sidestore"
+                            ? "Importing pairing file into SideStore..."
+                            : "Configuring pairing file...";
 
                     PairingOperationResult pairingResult =
                         pendingPairingTarget == "sidestore"
@@ -1045,8 +1051,12 @@ private static string RustBackendPath =>
 
                     pairingMessage =
                         pairingConfigured
-                            ? "\nPairing file: Configured automatically ✓"
-                            : "\nPairing file: App installed, but pairing setup needs attention.";
+                            ? pendingPairingTarget == "sidestore"
+                                ? "\nSideStore pairing: Imported automatically ✓"
+                                : "\nPairing file: Configured automatically ✓"
+                            : pendingPairingTarget == "sidestore"
+                                ? "\nSideStore pairing: Installation succeeded, but automatic import needs attention."
+                                : "\nPairing file: App installed, but pairing setup needs attention.";
 
                     if (pairingConfigured)
                     {
