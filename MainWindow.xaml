@@ -156,6 +156,56 @@
             </Setter>
         </Style>
 
+        <Style x:Key="SegmentRadio"
+               TargetType="RadioButton">
+            <Setter Property="Foreground" Value="#7A7A83"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="13,8"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="SegmentBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="9"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="SegmentBorder"
+                                        Property="Background"
+                                        Value="#1B1B20"/>
+                                <Setter Property="Foreground"
+                                        Value="#F5F5F7"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="SegmentBorder"
+                                        Property="Background"
+                                        Value="#F5F5F7"/>
+                                <Setter Property="Foreground"
+                                        Value="#080809"/>
+                                <Setter Property="FontWeight"
+                                        Value="Bold"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="SegmentBorder"
+                                        Property="Opacity"
+                                        Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="ProgressBarStyle"
                TargetType="ProgressBar">
             <Setter Property="Height" Value="7"/>
@@ -545,19 +595,43 @@
                                             Orientation="Horizontal"
                                             VerticalAlignment="Center">
 
-                                    <ComboBox x:Name="QuickInstallChannelComboBox"
-                                              Width="118"
-                                              Height="38"
-                                              SelectedIndex="0"
-                                              Background="#18181D"
-                                              Foreground="#F5F5F7"
-                                              BorderBrush="#303036"
-                                              BorderThickness="1"
-                                              Padding="10,0"
-                                              Margin="0,0,9,0">
-                                        <ComboBoxItem Content="Stable"/>
-                                        <ComboBoxItem Content="Nightly"/>
-                                    </ComboBox>
+                                    <StackPanel Orientation="Horizontal"
+                                                VerticalAlignment="Center"
+                                                Margin="0,0,9,0">
+
+                                        <TextBlock Text="BUILD"
+                                                   Foreground="#55555D"
+                                                   FontSize="9"
+                                                   FontWeight="Bold"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,8,0"/>
+
+                                        <Border Background="#111115"
+                                                BorderBrush="#2B2B31"
+                                                BorderThickness="1"
+                                                CornerRadius="11"
+                                                Padding="3">
+
+                                            <StackPanel Orientation="Horizontal">
+
+                                                <RadioButton x:Name="QuickInstallStableRadio"
+                                                             GroupName="QuickInstallChannel"
+                                                             Content="Stable"
+                                                             IsChecked="True"
+                                                             Style="{StaticResource SegmentRadio}"
+                                                             Checked="QuickInstallChannel_Checked"/>
+
+                                                <RadioButton x:Name="QuickInstallNightlyRadio"
+                                                             GroupName="QuickInstallChannel"
+                                                             Content="Nightly"
+                                                             Style="{StaticResource SegmentRadio}"
+                                                             Checked="QuickInstallChannel_Checked"/>
+
+                                            </StackPanel>
+
+                                        </Border>
+
+                                    </StackPanel>
 
                                     <Button Content="Browse All"
                                             Style="{StaticResource SecondaryButton}"
