@@ -708,7 +708,9 @@
 
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="250"/>
+                                    <ColumnDefinition Width="220"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock x:Name="QuickInstallStatusText"
@@ -722,6 +724,13 @@
                                              Style="{StaticResource ProgressBarStyle}"
                                              Value="0"
                                              VerticalAlignment="Center"/>
+
+                                <Button x:Name="QuickFixPairingButton"
+                                        Grid.Column="3"
+                                        Content="Fix Pairing"
+                                        Style="{StaticResource SecondaryButton}"
+                                        Padding="14,8"
+                                        Click="QuickFixPairingButton_Click"/>
 
                             </Grid>
 
