@@ -1128,6 +1128,15 @@
                                                  Margin="0,0,7,0"/>
                                         <TextBlock Text="Install"
                                                    Foreground="#6F6F77"
+                                                   FontSize="9"
+                                                   Margin="0,0,16,0"/>
+                                        <Ellipse x:Name="ProgressPairingDot"
+                                                 Width="8"
+                                                 Height="8"
+                                                 Fill="#5B5B63"
+                                                 Margin="0,0,7,0"/>
+                                        <TextBlock Text="Pair"
+                                                   Foreground="#6F6F77"
                                                    FontSize="9"/>
                                     </StackPanel>
                                 </StackPanel>
