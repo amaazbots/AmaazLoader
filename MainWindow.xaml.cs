@@ -55,12 +55,20 @@ public partial class MainWindow : Window
 
     private int currentAnimatedProgress;
 
-private static string RustBackendPath =>
+    private static string RustBackendPath =>
     AppPaths.BackendExecutable;
 
     public MainWindow()
     {
         InitializeComponent();
+
+        Version? appVersion =
+            typeof(MainWindow).Assembly.GetName().Version;
+
+        AppVersionText.Text =
+            appVersion == null
+                ? "v1.2.0"
+                : $"v{appVersion.Major}.{appVersion.Minor}.{appVersion.Build}";
 
         deviceManager = new DeviceManager();
         signingManager = new SigningManager();
