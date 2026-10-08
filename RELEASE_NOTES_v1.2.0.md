@@ -28,24 +28,11 @@ A Rust compile issue in the pairing helper was fixed by inserting the UDID direc
 
 SideStore pairing has been verified working end-to-end.
 
-## Release checklist
+## Download verification
 
-Before publishing v1.2.0:
+Installer: `AmaazLoader-v1.2.0-Setup.exe`
 
-- Build the Rust signing backend in release mode.
-- Build the Rust pairing helper in release mode.
-- Run `dotnet build`.
-- Run `dotnet publish -c Release`.
-- Build the Inno Setup installer.
-- Test SideStore Stable.
-- Test SideStore Nightly.
-- Test LiveContainer Stable.
-- Test LiveContainer Nightly.
-- Test Fix Pairing.
-- Test a normal manually selected IPA.
-- Test Apple Account + 2FA on a clean session.
-- Verify installer upgrade behavior from v1.1.0.
-- Generate the final installer SHA-256 before publishing the GitHub release.
+SHA-256: `341D26C1514E61D82C18DD4D666C0CB18C9A1CEE74FE025F33A13EF5D27FC78D`
 
 ## Version
 
