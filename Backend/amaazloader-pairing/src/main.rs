@@ -716,7 +716,7 @@ async fn place_file(
 
     let mut file =
         afc.open(
-            remote_path,
+            remote_path.clone(),
             AfcFopenMode::Wr)
             .await
             .context(
