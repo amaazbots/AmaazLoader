@@ -676,15 +676,10 @@ async fn generate_pairing_file(
                 :< remote_pairing_plist,
             });
 
-    if let Some(
-        dictionary) =
-        combined.as_dictionary_mut()
-    {
-        dictionary.insert(
-            "UDID".to_string(),
-            plist::Value::String(
-                device.udid.clone()));
-    }
+    combined.insert(
+        "UDID".to_string(),
+        plist::Value::String(
+            device.udid.clone()));
 
     println!(
         "AMAAZ_PAIRING_EVENT:REMOTE_PAIRING_SIZE:{}",
