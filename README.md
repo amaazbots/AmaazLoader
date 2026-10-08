@@ -32,11 +32,15 @@ AmaazLoader is a modern Windows utility for signing and installing IPA files on 
 
 ## v1.2.0
 
-AmaazLoader v1.2.0 is the current release target on the `v1.2-installers` branch.
+AmaazLoader v1.2.0 is the current public release.
 
 This update expands AmaazLoader from a basic IPA sideloader into a more complete sideloading suite, with Quick Install, automatic device pairing, SideStore and LiveContainer support, Stable / Nightly channels, pairing repair, and a more polished installation workflow.
 
 See `RELEASE_NOTES_v1.2.0.md` for the full change summary.
+
+Installer: `AmaazLoader-v1.2.0-Setup.exe`
+
+SHA-256: `341D26C1514E61D82C18DD4D666C0CB18C9A1CEE74FE025F33A13EF5D27FC78D`
 
 ## How it works
 
