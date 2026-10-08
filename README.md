@@ -4,16 +4,23 @@ AmaazLoader is a modern Windows utility for signing and installing IPA files on 
 
 ## Features
 
-- Automatic IPA signing
+- Automatic IPA signing with your own Apple Account
 - Direct USB installation
 - Apple Account authentication
 - Two-factor authentication support
-- Automatic device detection
+- Automatic iPhone and iPad detection
 - Apple Developer team detection
 - IPA metadata display
-- Real-time authentication, signing and installation progress
+- Real-time Prepare → Authenticate → Sign → Install → Pair → Done progress
+- Quick Install for SideStore and LiveContainer
+- Stable / Nightly build selection
+- Automatic SideStore / LiveContainer pairing setup
+- Pairing verification and automatic repair retry
+- One-click Fix Pairing action
+- Installed-on-device detection
+- Verified stable-download caching for faster reinstalls
 - Native Windows installer
-- Portable backend and bundled device communication tools
+- Portable signing backend and bundled device communication tools
 
 ## Requirements
 
@@ -21,29 +28,33 @@ AmaazLoader is a modern Windows utility for signing and installing IPA files on 
 - 64-bit Windows
 - iPhone or iPad connected by USB
 - Apple Account
-- Internet connection for Apple authentication and signing services
+- Internet connection for Apple authentication, downloads, and signing services
 
-## Download
+## v1.2.0
 
-The latest public build is available from the **Releases** section of this repository.
+AmaazLoader v1.2.0 is the current release target on the `v1.2-installers` branch.
 
-Current release: **AmaazLoader v1.0.0**
+This update expands AmaazLoader from a basic IPA sideloader into a more complete sideloading suite, with Quick Install, automatic device pairing, SideStore and LiveContainer support, Stable / Nightly channels, pairing repair, and a more polished installation workflow.
 
-Installer filename:
-
-`AmaazLoader-v1.0.0-Setup.exe`
-
-SHA-256:
-
-`5931b104285dfdd870504b92340c413e3367f3a6b0b0c1c65e86068cba9063e5`
+See `RELEASE_NOTES_v1.2.0.md` for the full change summary.
 
 ## How it works
 
+### Standard IPA install
+
 1. Connect your iPhone or iPad to your Windows PC over USB.
-2. Select an IPA file.
+2. Select or drop an IPA file into AmaazLoader.
 3. Connect your Apple Account.
 4. Complete Apple verification if requested.
 5. AmaazLoader signs the IPA and installs it directly to the connected device.
+
+### Quick Install
+
+1. Connect your device and Apple Account.
+2. Choose Stable or Nightly.
+3. Select SideStore or LiveContainer.
+4. AmaazLoader downloads the app, signs it, installs it, generates pairing data, imports it, and verifies the result.
+5. If pairing validation fails, AmaazLoader automatically attempts a fresh pairing rebuild before giving up.
 
 ## Privacy
 
