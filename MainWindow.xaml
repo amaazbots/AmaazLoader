@@ -284,7 +284,7 @@
                                    FontSize="10"
                                    Margin="0,4,0,0"/>
                         <TextBlock x:Name="AppVersionText"
-                                   Text="v1.2.0"
+                                   Text="v1.2.1"
                                    Foreground="#3F3F46"
                                    FontSize="9"
                                    FontWeight="SemiBold"
@@ -356,6 +356,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <StackPanel Orientation="Horizontal">
@@ -388,6 +389,40 @@
                                            VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
+
+                        <!-- Optional sponsored link: never opened automatically. -->
+                        <Border Grid.Row="2"
+                                BorderBrush="#27272C"
+                                BorderThickness="0,1,0,0"
+                                Margin="0,5,0,0"
+                                Padding="0,10,0,0">
+                            <StackPanel>
+                                <TextBlock Text="SPONSORED"
+                                           Foreground="#74747C"
+                                           FontSize="9"
+                                           FontWeight="Bold"
+                                           Margin="4,0,0,5"/>
+                                <Button x:Name="SponsoredLinkButton"
+                                        Style="{StaticResource NavButton}"
+                                        Height="34"
+                                        Margin="0"
+                                        Padding="8,0"
+                                        ToolTip="Advertisement • Opens an external website"
+                                        Click="SponsoredLinkButton_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="↗"
+                                                   FontSize="14"
+                                                   Width="26"/>
+                                        <TextBlock Text="Visit sponsor"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <TextBlock Text="Optional • External website"
+                                           FontSize="9"
+                                           Foreground="#62626A"
+                                           Margin="4,3,0,0"/>
+                            </StackPanel>
+                        </Border>
 
                     </Grid>
 
