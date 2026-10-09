@@ -1,6 +1,10 @@
-# AmaazLoader
+# AmaazLoader — IPA Installer & Sideloading Tool for Windows
 
-AmaazLoader is a modern Windows utility for signing and installing IPA files on iPhone and iPad using your own Apple Account.
+**AmaazLoader** is a free Windows 10/11 app that helps you **sign and install IPA files on iPhone and iPad** using your own Apple Account. Connect an iOS device by USB, choose an IPA, authenticate, and sideload it. It also includes Quick Install for **SideStore** and **LiveContainer**, with pairing setup and repair.
+
+**[Download AmaazLoader v1.2.2](https://github.com/amaazbots/AmaazLoader/releases/tag/v1.2.2)** · **[Official website](https://amaazbots.github.io/AmaazLoader-Website/)** · **[How to install IPA files](https://amaazbots.github.io/AmaazLoader-Website/install-ipa.html)**
+
+This is the official AmaazLoader source repository by Amaazbots.
 
 ## Features
 
@@ -30,7 +34,7 @@ AmaazLoader is a modern Windows utility for signing and installing IPA files on 
 - Apple Account
 - Internet connection for Apple authentication, downloads, and signing services
 
-## v1.2.2 (upcoming)
+## v1.2.2 (latest release)
 
 Maintenance update: LiveContainer download recovery via an alternate release source when the primary source is unavailable, dynamic nightly release lookup, and an offline-safe LiveContainer tile icon.
 
@@ -40,7 +44,7 @@ Adds a clearly labeled, optional Sponsored link in the sidebar that opens only o
 
 ## v1.2.0
 
-AmaazLoader v1.2.0 is the current public release.
+AmaazLoader v1.2.0 introduced the following features.
 
 This update expands AmaazLoader from a basic IPA sideloader into a more complete sideloading suite, with Quick Install, automatic device pairing, SideStore and LiveContainer support, Stable / Nightly channels, pairing repair, and a more polished installation workflow.
 
