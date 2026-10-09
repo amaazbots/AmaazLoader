@@ -53,7 +53,7 @@ public sealed class InstallerCatalogService
             "nightly",
             StringComparison.OrdinalIgnoreCase))
         {
-            return ResolveLatestReleaseAsync(
+            return ResolveLatestReleaseWithFallbackAsync(
                 app,
                 cancellationToken);
         }
@@ -83,7 +83,7 @@ public sealed class InstallerCatalogService
         }
         else
         {
-            return ResolveLatestReleaseAsync(
+            return ResolveLatestReleaseWithFallbackAsync(
                 app,
                 cancellationToken);
         }
@@ -98,6 +98,43 @@ public sealed class InstallerCatalogService
                 Sha256 = null,
                 SizeBytes = 0
             });
+    }
+
+    public async Task<InstallerResolvedDownload> ResolveLatestReleaseWithFallbackAsync(
+        InstallerCatalogItem app,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await ResolveLatestReleaseAsync(app, cancellationToken);
+        }
+        catch (HttpRequestException) when (
+            app.Id.Equals("livecontainer", StringComparison.OrdinalIgnoreCase))
+        {
+            // The official LiveContainer repository has experienced temporary
+            // unavailability. Use the project mirror only if the primary fails.
+            return await ResolveLatestReleaseAsync(
+                CloneWithRepository(app, "LiveContainerMirror/LiveContainer"),
+                cancellationToken);
+        }
+    }
+
+    private static InstallerCatalogItem CloneWithRepository(
+        InstallerCatalogItem source,
+        string repository)
+    {
+        return new InstallerCatalogItem
+        {
+            Id = source.Id,
+            Name = source.Name,
+            Description = source.Description,
+            Category = source.Category,
+            Repository = repository,
+            AssetName = source.AssetName,
+            Website = source.Website,
+            Notes = source.Notes,
+            Featured = source.Featured
+        };
     }
 
     public async Task<InstallerResolvedDownload> ResolveLatestReleaseAsync(
@@ -258,13 +295,32 @@ public sealed class InstallerCatalogService
             }
         }
 
-        using HttpResponseMessage response =
+        HttpResponseMessage response =
             await HttpClient.GetAsync(
                 release.DownloadUrl,
                 HttpCompletionOption.ResponseHeadersRead,
                 cancellationToken);
 
-        response.EnsureSuccessStatusCode();
+        // A release can resolve successfully but the linked asset may still
+        // disappear. Retry the LiveContainer asset against the project mirror.
+        if (!response.IsSuccessStatusCode &&
+            release.App.Id.Equals("livecontainer", StringComparison.OrdinalIgnoreCase) &&
+            release.App.Repository.Equals("LiveContainer/LiveContainer", StringComparison.OrdinalIgnoreCase))
+        {
+            response.Dispose();
+            InstallerResolvedDownload mirrorRelease =
+                await ResolveLatestReleaseAsync(
+                    CloneWithRepository(release.App, "LiveContainerMirror/LiveContainer"),
+                    cancellationToken);
+            response = await HttpClient.GetAsync(
+                mirrorRelease.DownloadUrl,
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken);
+        }
+
+        using (response)
+        {
+            response.EnsureSuccessStatusCode();
 
         long? totalBytes =
             response.Content.Headers.ContentLength;
@@ -343,6 +399,7 @@ public sealed class InstallerCatalogService
         }
 
         return destinationPath;
+        }
     }
 
     private static async Task<string> ComputeSha256Async(
