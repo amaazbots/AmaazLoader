@@ -44,7 +44,7 @@ public sealed class InstallerCatalogService
         return CreateFallbackCatalog();
     }
 
-    public Task<InstallerResolvedDownload> ResolveChannelReleaseAsync(
+    public async Task<InstallerResolvedDownload> ResolveChannelReleaseAsync(
         InstallerCatalogItem app,
         string channel,
         CancellationToken cancellationToken = default)
@@ -53,7 +53,7 @@ public sealed class InstallerCatalogService
             "nightly",
             StringComparison.OrdinalIgnoreCase))
         {
-            return ResolveLatestReleaseWithFallbackAsync(
+            return await ResolveLatestReleaseWithFallbackAsync(
                 app,
                 cancellationToken);
         }
@@ -75,6 +75,21 @@ public sealed class InstallerCatalogService
             "livecontainer",
             StringComparison.OrdinalIgnoreCase))
         {
+            // Resolve official nightly assets dynamically; use the mirror
+            // when the upstream repository is unavailable.
+            try
+            {
+                return await ResolveReleaseFromApiAsync(
+                    app,
+                    "https://api.github.com/repos/LiveContainer/LiveContainer/releases/tags/nightly",
+                    "Nightly",
+                    cancellationToken);
+            }
+            catch (HttpRequestException)
+            {
+                return await ResolveMirrorReleaseAsync(app, cancellationToken);
+            }
+
             downloadUrl =
                 "https://github.com/LiveContainer/LiveContainer/releases/download/nightly/LiveContainer+SideStore.ipa";
 
@@ -83,21 +98,20 @@ public sealed class InstallerCatalogService
         }
         else
         {
-            return ResolveLatestReleaseWithFallbackAsync(
+            return await ResolveLatestReleaseWithFallbackAsync(
                 app,
                 cancellationToken);
         }
 
-        return Task.FromResult(
-            new InstallerResolvedDownload
-            {
-                App = app,
-                Version = "Nightly",
-                FileName = fileName,
-                DownloadUrl = downloadUrl,
-                Sha256 = null,
-                SizeBytes = 0
-            });
+        return new InstallerResolvedDownload
+        {
+            App = app,
+            Version = "Nightly",
+            FileName = fileName,
+            DownloadUrl = downloadUrl,
+            Sha256 = null,
+            SizeBytes = 0
+        };
     }
 
     public async Task<InstallerResolvedDownload> ResolveLatestReleaseWithFallbackAsync(
