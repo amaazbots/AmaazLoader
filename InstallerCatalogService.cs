@@ -295,32 +295,26 @@ public sealed class InstallerCatalogService
             }
         }
 
-        HttpResponseMessage response =
+        using HttpResponseMessage response =
             await HttpClient.GetAsync(
                 release.DownloadUrl,
                 HttpCompletionOption.ResponseHeadersRead,
                 cancellationToken);
 
-        // A release can resolve successfully but the linked asset may still
-        // disappear. Retry the LiveContainer asset against the project mirror.
         if (!response.IsSuccessStatusCode &&
             release.App.Id.Equals("livecontainer", StringComparison.OrdinalIgnoreCase) &&
             release.App.Repository.Equals("LiveContainer/LiveContainer", StringComparison.OrdinalIgnoreCase))
         {
-            response.Dispose();
+            // Retry through the project mirror, retaining the mirror's own
+            // version, asset size and checksum for cache and verification.
             InstallerResolvedDownload mirrorRelease =
                 await ResolveLatestReleaseAsync(
                     CloneWithRepository(release.App, "LiveContainerMirror/LiveContainer"),
                     cancellationToken);
-            response = await HttpClient.GetAsync(
-                mirrorRelease.DownloadUrl,
-                HttpCompletionOption.ResponseHeadersRead,
-                cancellationToken);
+            return await DownloadAsync(mirrorRelease, progress, cancellationToken);
         }
 
-        using (response)
-        {
-            response.EnsureSuccessStatusCode();
+        response.EnsureSuccessStatusCode();
 
         long? totalBytes =
             response.Content.Headers.ContentLength;
@@ -399,7 +393,6 @@ public sealed class InstallerCatalogService
         }
 
         return destinationPath;
-        }
     }
 
     private static async Task<string> ComputeSha256Async(
