@@ -90,11 +90,6 @@ public sealed class InstallerCatalogService
                 return await ResolveMirrorReleaseAsync(app, cancellationToken);
             }
 
-            downloadUrl =
-                "https://github.com/LiveContainer/LiveContainer/releases/download/nightly/LiveContainer+SideStore.ipa";
-
-            fileName =
-                "LiveContainerSideStore-Nightly.ipa";
         }
         else
         {
