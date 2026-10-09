@@ -284,7 +284,7 @@
                                    FontSize="10"
                                    Margin="0,4,0,0"/>
                         <TextBlock x:Name="AppVersionText"
-                                   Text="v1.2.1"
+                                   Text="v1.2.2"
                                    Foreground="#3F3F46"
                                    FontSize="9"
                                    FontWeight="SemiBold"
