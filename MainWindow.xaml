@@ -782,8 +782,25 @@
                                                 Background="#15151A"
                                                 ClipToBounds="True"
                                                 Margin="0,0,14,0">
-                                            <Image Source="https://raw.githubusercontent.com/LiveContainer/LiveContainer/main/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon1024.png"
-                                                   Stretch="UniformToFill"/>
+                                            <!-- Bundled vector fallback: no broken remote image requests. -->
+                                            <Grid Background="#1769E0">
+                                                <Border Margin="7"
+                                                        Background="#EAF4FF"
+                                                        BorderBrush="#85BBFF"
+                                                        BorderThickness="2"
+                                                        CornerRadius="8"/>
+                                                <Border Margin="12"
+                                                        Background="#BBD9FF"
+                                                        BorderBrush="#387EEB"
+                                                        BorderThickness="1"
+                                                        CornerRadius="5"/>
+                                                <TextBlock Text="LC"
+                                                           FontSize="12"
+                                                           FontWeight="ExtraBold"
+                                                           Foreground="#1453A5"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
+                                            </Grid>
                                         </Border>
 
                                         <StackPanel Grid.Column="1"
