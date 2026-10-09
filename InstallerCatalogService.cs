@@ -44,7 +44,7 @@ public sealed class InstallerCatalogService
         return CreateFallbackCatalog();
     }
 
-    public Task<InstallerResolvedDownload> ResolveChannelReleaseAsync(
+    public async Task<InstallerResolvedDownload> ResolveChannelReleaseAsync(
         InstallerCatalogItem app,
         string channel,
         CancellationToken cancellationToken = default)
@@ -53,7 +53,7 @@ public sealed class InstallerCatalogService
             "nightly",
             StringComparison.OrdinalIgnoreCase))
         {
-            return ResolveLatestReleaseAsync(
+            return await ResolveLatestReleaseWithFallbackAsync(
                 app,
                 cancellationToken);
         }
@@ -75,29 +75,95 @@ public sealed class InstallerCatalogService
             "livecontainer",
             StringComparison.OrdinalIgnoreCase))
         {
-            downloadUrl =
-                "https://github.com/LiveContainer/LiveContainer/releases/download/nightly/LiveContainer+SideStore.ipa";
+            // Resolve official nightly assets dynamically; use the mirror
+            // when the upstream repository is unavailable.
+            try
+            {
+                return await ResolveReleaseFromApiAsync(
+                    app,
+                    "https://api.github.com/repos/LiveContainer/LiveContainer/releases/tags/nightly",
+                    "Nightly",
+                    cancellationToken);
+            }
+            catch (HttpRequestException)
+            {
+                return await ResolveMirrorReleaseAsync(app, cancellationToken);
+            }
 
-            fileName =
-                "LiveContainerSideStore-Nightly.ipa";
         }
         else
         {
-            return ResolveLatestReleaseAsync(
+            return await ResolveLatestReleaseWithFallbackAsync(
                 app,
                 cancellationToken);
         }
 
-        return Task.FromResult(
-            new InstallerResolvedDownload
-            {
-                App = app,
-                Version = "Nightly",
-                FileName = fileName,
-                DownloadUrl = downloadUrl,
-                Sha256 = null,
-                SizeBytes = 0
-            });
+        return new InstallerResolvedDownload
+        {
+            App = app,
+            Version = "Nightly",
+            FileName = fileName,
+            DownloadUrl = downloadUrl,
+            Sha256 = null,
+            SizeBytes = 0
+        };
+    }
+
+    public async Task<InstallerResolvedDownload> ResolveLatestReleaseWithFallbackAsync(
+        InstallerCatalogItem app,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await ResolveLatestReleaseAsync(app, cancellationToken);
+        }
+        catch (HttpRequestException) when (
+            app.Id.Equals("livecontainer", StringComparison.OrdinalIgnoreCase))
+        {
+            // The official LiveContainer repository has experienced temporary
+            // unavailability. Use the project mirror only if the primary fails.
+            return await ResolveMirrorReleaseAsync(app, cancellationToken);
+        }
+    }
+
+    private async Task<InstallerResolvedDownload> ResolveMirrorReleaseAsync(
+        InstallerCatalogItem app,
+        CancellationToken cancellationToken)
+    {
+        InstallerCatalogItem mirror =
+            CloneWithRepository(app, "LiveContainerMirror/LiveContainer");
+        try
+        {
+            return await ResolveLatestReleaseAsync(mirror, cancellationToken);
+        }
+        catch (HttpRequestException)
+        {
+            // Mirror often publishes a tagged nightly release only.
+            // Make the fallback build type explicit in the UI.
+            return await ResolveReleaseFromApiAsync(
+                mirror,
+                "https://api.github.com/repos/LiveContainerMirror/LiveContainer/releases/tags/nightly",
+                "Nightly (mirror fallback)",
+                cancellationToken);
+        }
+    }
+
+    private static InstallerCatalogItem CloneWithRepository(
+        InstallerCatalogItem source,
+        string repository)
+    {
+        return new InstallerCatalogItem
+        {
+            Id = source.Id,
+            Name = source.Name,
+            Description = source.Description,
+            Category = source.Category,
+            Repository = repository,
+            AssetName = source.AssetName,
+            Website = source.Website,
+            Notes = source.Notes,
+            Featured = source.Featured
+        };
     }
 
     public async Task<InstallerResolvedDownload> ResolveLatestReleaseAsync(
@@ -111,6 +177,19 @@ public sealed class InstallerCatalogService
         string releaseApiUrl =
             $"https://api.github.com/repos/{app.Repository}/releases/latest";
 
+        return await ResolveReleaseFromApiAsync(
+            app,
+            releaseApiUrl,
+            null,
+            cancellationToken);
+    }
+
+    private async Task<InstallerResolvedDownload> ResolveReleaseFromApiAsync(
+        InstallerCatalogItem app,
+        string releaseApiUrl,
+        string? overrideVersion,
+        CancellationToken cancellationToken)
+    {
         using HttpResponseMessage response =
             await HttpClient.GetAsync(releaseApiUrl, cancellationToken);
 
@@ -130,6 +209,8 @@ public sealed class InstallerCatalogService
             root.TryGetProperty("tag_name", out JsonElement versionElement)
                 ? versionElement.GetString() ?? "Latest"
                 : "Latest";
+
+        version = overrideVersion ?? version;
 
         if (!root.TryGetProperty("assets", out JsonElement assetsElement))
             throw new InvalidOperationException(
@@ -263,6 +344,17 @@ public sealed class InstallerCatalogService
                 release.DownloadUrl,
                 HttpCompletionOption.ResponseHeadersRead,
                 cancellationToken);
+
+        if (!response.IsSuccessStatusCode &&
+            release.App.Id.Equals("livecontainer", StringComparison.OrdinalIgnoreCase) &&
+            release.App.Repository.Equals("LiveContainer/LiveContainer", StringComparison.OrdinalIgnoreCase))
+        {
+            // Retry through the project mirror, retaining the mirror's own
+            // version, asset size and checksum for cache and verification.
+            InstallerResolvedDownload mirrorRelease =
+                await ResolveMirrorReleaseAsync(release.App, cancellationToken);
+            return await DownloadAsync(mirrorRelease, progress, cancellationToken);
+        }
 
         response.EnsureSuccessStatusCode();
 

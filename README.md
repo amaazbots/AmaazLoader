@@ -30,7 +30,11 @@ AmaazLoader is a modern Windows utility for signing and installing IPA files on 
 - Apple Account
 - Internet connection for Apple authentication, downloads, and signing services
 
-## v1.2.1 (upcoming)
+## v1.2.2 (upcoming)
+
+Maintenance update: LiveContainer download recovery via an alternate release source when the primary source is unavailable, dynamic nightly release lookup, and an offline-safe LiveContainer tile icon.
+
+## v1.2.1
 
 Adds a clearly labeled, optional Sponsored link in the sidebar that opens only on explicit click. The experimental display ad banner was removed. The v1.2.0 release remains unchanged.
 
