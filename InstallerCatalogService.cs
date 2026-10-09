@@ -113,8 +113,28 @@ public sealed class InstallerCatalogService
         {
             // The official LiveContainer repository has experienced temporary
             // unavailability. Use the project mirror only if the primary fails.
-            return await ResolveLatestReleaseAsync(
-                CloneWithRepository(app, "LiveContainerMirror/LiveContainer"),
+            return await ResolveMirrorReleaseAsync(app, cancellationToken);
+        }
+    }
+
+    private async Task<InstallerResolvedDownload> ResolveMirrorReleaseAsync(
+        InstallerCatalogItem app,
+        CancellationToken cancellationToken)
+    {
+        InstallerCatalogItem mirror =
+            CloneWithRepository(app, "LiveContainerMirror/LiveContainer");
+        try
+        {
+            return await ResolveLatestReleaseAsync(mirror, cancellationToken);
+        }
+        catch (HttpRequestException)
+        {
+            // Mirror often publishes a tagged nightly release only.
+            // Make the fallback build type explicit in the UI.
+            return await ResolveReleaseFromApiAsync(
+                mirror,
+                "https://api.github.com/repos/LiveContainerMirror/LiveContainer/releases/tags/nightly",
+                "Nightly (mirror fallback)",
                 cancellationToken);
         }
     }
@@ -148,6 +168,19 @@ public sealed class InstallerCatalogService
         string releaseApiUrl =
             $"https://api.github.com/repos/{app.Repository}/releases/latest";
 
+        return await ResolveReleaseFromApiAsync(
+            app,
+            releaseApiUrl,
+            null,
+            cancellationToken);
+    }
+
+    private async Task<InstallerResolvedDownload> ResolveReleaseFromApiAsync(
+        InstallerCatalogItem app,
+        string releaseApiUrl,
+        string? overrideVersion,
+        CancellationToken cancellationToken)
+    {
         using HttpResponseMessage response =
             await HttpClient.GetAsync(releaseApiUrl, cancellationToken);
 
@@ -167,6 +200,8 @@ public sealed class InstallerCatalogService
             root.TryGetProperty("tag_name", out JsonElement versionElement)
                 ? versionElement.GetString() ?? "Latest"
                 : "Latest";
+
+        version = overrideVersion ?? version;
 
         if (!root.TryGetProperty("assets", out JsonElement assetsElement))
             throw new InvalidOperationException(
@@ -308,9 +343,7 @@ public sealed class InstallerCatalogService
             // Retry through the project mirror, retaining the mirror's own
             // version, asset size and checksum for cache and verification.
             InstallerResolvedDownload mirrorRelease =
-                await ResolveLatestReleaseAsync(
-                    CloneWithRepository(release.App, "LiveContainerMirror/LiveContainer"),
-                    cancellationToken);
+                await ResolveMirrorReleaseAsync(release.App, cancellationToken);
             return await DownloadAsync(mirrorRelease, progress, cancellationToken);
         }
 
